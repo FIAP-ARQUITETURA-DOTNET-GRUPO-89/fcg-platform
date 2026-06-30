@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: fcg-platform
+  labels:
+    app: rabbitmq
+    component: message-broker
+    tier: infrastructure
+
+data:
+  RABBITMQ_DEFAULT_VHOST: "/"
+  RABBITMQ_NODE_NAME: "rabbit@localhost"
