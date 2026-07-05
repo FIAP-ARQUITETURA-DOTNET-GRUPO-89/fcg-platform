@@ -42,8 +42,8 @@ Após criar o namespace, realize o deploy da infraestrutura compartilhada.
 
 A documentação de cada componente encontra-se em:
 
-- [PostgreSQL](infrastructure/postgres.md)
-- [RabbitMQ](infrastructure/rabbitmq.md)
+- [PostgreSQL](k8s/infrastructure/postgres.md)
+- [RabbitMQ](k8s/infrastructure/rabbitmq.md)
 
 ## Microsserviços
 
