@@ -78,13 +78,13 @@ kubectl get svc -n fcg-platform
 Como o Service é ClusterIP, utilizamos port-forward para acesso local:
 
 ```bash
-kubectl port-forward svc/fcg-users-api 7072:7072 -n fcg-platform
+kubectl port-forward svc/fcg-users-api 7010:7010 -n fcg-platform
 ```
 
 A API estará disponível em:
 
 ```text
-http://localhost:7072
+http://localhost:7010
 ```
 
 # 🧠 Arquitetura
