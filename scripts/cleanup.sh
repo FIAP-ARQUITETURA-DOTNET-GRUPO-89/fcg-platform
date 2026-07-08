@@ -2,33 +2,51 @@
 
 set -e
 
-NAMESPACE="fcg-platform"
-
-echo "🚀 Iniciando deploy da plataforma..."
+echo "🧹 Removendo recursos da plataforma..."
 
 echo ""
-echo "📦 Criando namespace..."
-kubectl apply -f k8s/namespace.yaml
+echo "💳 Removendo FCG Payments Worker..."
+kubectl delete -f microservices/fcg-payments/k8s/worker/ --ignore-not-found
 
 echo ""
-echo "🐘 Deploy do PostgreSQL..."
-kubectl apply -f k8s/infrastructure/postgres/
+echo "💳 Removendo FCG Payments API..."
+kubectl delete -f microservices/fcg-payments/k8s/api/ --ignore-not-found
 
 echo ""
-echo "🐇 Deploy do RabbitMQ..."
-kubectl apply -f k8s/infrastructure/rabbitmq/
+echo "🎮 Removendo FCG Catalog Worker..."
+kubectl delete -f microservices/fcg-catalog/k8s/worker/ --ignore-not-found
 
 echo ""
-echo "👤 Deploy do FCG Users API..."
-kubectl apply -f microservices/fcg-users/k8s/api/
+echo "🎮 Removendo FCG Catalog API..."
+kubectl delete -f microservices/fcg-catalog/k8s/api/ --ignore-not-found
 
 echo ""
-echo "👷 Deploy do FCG Users Worker..."
-kubectl apply -f microservices/fcg-users/k8s/worker/
+echo "🔔 Removendo FCG Notifications Worker..."
+kubectl delete -f microservices/fcg-notifications/k8s/worker/ --ignore-not-found
 
 echo ""
-echo "📋 Recursos implantados:"
-kubectl get all -n "${NAMESPACE}"
+echo "🔔 Removendo FCG Notifications API..."
+kubectl delete -f microservices/fcg-notifications/k8s/api/ --ignore-not-found
 
 echo ""
-echo "✅ Deploy concluído com sucesso."
+echo "👷 Removendo FCG Users Worker..."
+kubectl delete -f microservices/fcg-users/k8s/worker/ --ignore-not-found
+
+echo ""
+echo "👤 Removendo FCG Users API..."
+kubectl delete -f microservices/fcg-users/k8s/api/ --ignore-not-found
+
+echo ""
+echo "🐇 Removendo RabbitMQ..."
+kubectl delete -f k8s/infrastructure/rabbitmq/ --ignore-not-found
+
+echo ""
+echo "🐘 Removendo PostgreSQL..."
+kubectl delete -f k8s/infrastructure/postgres/ --ignore-not-found
+
+echo ""
+echo "📦 Removendo namespace..."
+kubectl delete -f k8s/namespace.yaml --ignore-not-found
+
+echo ""
+echo "✅ Limpeza concluída."

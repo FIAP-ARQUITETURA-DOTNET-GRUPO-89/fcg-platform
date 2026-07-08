@@ -4,27 +4,71 @@ set -e
 
 NAMESPACE="fcg-platform"
 
-echo "🧹 Removendo recursos da plataforma..."
+echo "🚀 Iniciando deploy da plataforma..."
 
 echo ""
-echo "👷 Removendo FCG Users Worker..."
-kubectl delete -f microservices/fcg-users/k8s/worker/ --ignore-not-found
+echo "📦 Criando namespace..."
+kubectl apply -f k8s/namespace.yaml
 
 echo ""
-echo "👤 Removendo FCG Users API..."
-kubectl delete -f microservices/fcg-users/k8s/api/ --ignore-not-found
+echo "🐘 Deploy do PostgreSQL..."
+kubectl apply -f k8s/infrastructure/postgres/configmap.yaml
+kubectl apply -f k8s/infrastructure/postgres/secret.yaml
+kubectl apply -f k8s/infrastructure/postgres/pvc.yaml
+kubectl apply -f k8s/infrastructure/postgres/deployment.yaml
+kubectl apply -f k8s/infrastructure/postgres/service.yaml
 
 echo ""
-echo "🐇 Removendo RabbitMQ..."
-kubectl delete -f k8s/infrastructure/rabbitmq/ --ignore-not-found
+echo "🐇 Deploy do RabbitMQ..."
+kubectl apply -f k8s/infrastructure/rabbitmq/configmap.yaml
+kubectl apply -f k8s/infrastructure/rabbitmq/secret.yaml
+kubectl apply -f k8s/infrastructure/rabbitmq/pvc.yaml
+kubectl apply -f k8s/infrastructure/rabbitmq/deployment.yaml
+kubectl apply -f k8s/infrastructure/rabbitmq/service.yaml
 
 echo ""
-echo "🐘 Removendo PostgreSQL..."
-kubectl delete -f k8s/infrastructure/postgres/ --ignore-not-found
+echo "⏳ Aguardando PostgreSQL..."
+kubectl rollout status deployment/postgres -n "${NAMESPACE}"
 
 echo ""
-echo "📦 Removendo namespace..."
-kubectl delete -f k8s/namespace.yaml --ignore-not-found
+echo "⏳ Aguardando RabbitMQ..."
+kubectl rollout status deployment/rabbitmq -n "${NAMESPACE}"
 
 echo ""
-echo "✅ Limpeza concluída."
+echo "👤 Deploy do FCG Users API..."
+kubectl apply -f microservices/fcg-users/k8s/api/
+
+echo ""
+echo "👷 Deploy do FCG Users Worker..."
+kubectl apply -f microservices/fcg-users/k8s/worker/
+
+echo ""
+echo "🔔 Deploy do FCG Notifications API..."
+kubectl apply -f microservices/fcg-notifications/k8s/api/
+
+echo ""
+echo "👷 Deploy do FCG Notifications Worker..."
+kubectl apply -f microservices/fcg-notifications/k8s/worker/
+
+echo ""
+echo "🎮 Deploy do FCG Catalog API..."
+kubectl apply -f microservices/fcg-catalog/k8s/api/
+
+echo ""
+echo "👷 Deploy do FCG Catalog Worker..."
+kubectl apply -f microservices/fcg-catalog/k8s/worker/
+
+echo ""
+echo "💳 Deploy do FCG Payments API..."
+kubectl apply -f microservices/fcg-payments/k8s/api/
+
+echo ""
+echo "👷 Deploy do FCG Payments Worker..."
+kubectl apply -f microservices/fcg-payments/k8s/worker/
+
+echo ""
+echo "📋 Recursos implantados:"
+kubectl get all -n "${NAMESPACE}"
+
+echo ""
+echo "✅ Deploy concluído com sucesso."
