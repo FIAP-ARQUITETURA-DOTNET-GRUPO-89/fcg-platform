@@ -49,17 +49,28 @@ A documentação de cada componente encontra-se em:
 
 Após a infraestrutura estar disponível, realize o deploy dos microsserviços na seguinte ordem:
 
-1. Users API
-2. Catalog API
-3. Payments API
-4. Notifications API
+1. FCG Users
+2. FCG Notifications
+3. FCG Catalog
+4. FCG Payments
 
-A documentação de cada serviço encontra-se em:
+A documentação de cada componente encontra-se em:
 
-- Users API
-- Catalog API
-- Payments API
-- Notifications API
+- 👤 [FCG Users API](k8s/services/fcg-users-api.md)
+
+- 👤 [FCG Users Worker](k8s/services/fcg-users-worker.md)
+
+- 🔔 [FCG Notifications API](k8s/services/fcg-notifications-api.md)
+
+- 🔔 [FCG Notifications Worker](k8s/services/fcg-notifications-worker.md)
+
+- 🎮 [FCG Catalog API](k8s/services/fcg-catalog-api.md)
+
+- 🎮 [FCG Catalog Worker](k8s/services/fcg-catalog-worker.md)
+
+- 💳 [FCG Payments API](k8s/services/fcg-payments-api.md)
+
+- 💳 [FCG Payments Worker](k8s/services/fcg-payments-worker.md)
 
 # 🔐 Secrets
 
@@ -78,7 +89,9 @@ Base64 é apenas codificação, não criptografia.
 
 # 🛠 Scripts úteis
 
-Scripts disponíveis no repositório para automação do ambiente Kubernetes.
+Os scripts foram desenvolvidos para serem executados em um terminal compatível com **Bash** (Linux, macOS ou Git Bash no Windows).
+
+No Windows, abra o **Git Bash** na raiz do repositório e execute os comandos abaixo.
 
 ## 🚀 Deploy completo
 
@@ -86,7 +99,7 @@ Scripts disponíveis no repositório para automação do ambiente Kubernetes.
 ./scripts/deploy.sh
 ```
 
-Responsável por subir toda a infraestrutura e serviços.
+Responsável por realizar o deploy da infraestrutura compartilhada e dos microsserviços da plataforma no Kubernetes.
 
 ## 🧹 Cleanup do cluster
 
@@ -94,7 +107,7 @@ Responsável por subir toda a infraestrutura e serviços.
 ./scripts/cleanup.sh
 ```
 
-Remove todos os recursos da plataforma no Kubernetes.
+Remove todos os recursos da plataforma implantados no cluster Kubernetes.
 
 # 🛠 Comandos Úteis
 
