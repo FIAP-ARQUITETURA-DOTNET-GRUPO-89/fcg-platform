@@ -6,6 +6,7 @@ Repositório responsável pela orquestração da plataforma FCG, contendo config
 
 - [📦 Clonando o repositório](#-clonando-o-repositório)
 - [🚀 Começando](#-começando)
+- [🏛️ Arquitetura](#️-arquitetura)
 - [🐳 Executar com Docker](#-executar-com-docker)
 - [☸️ Executar com Kubernetes](#️-executar-com-kubernetes)
 
@@ -36,6 +37,12 @@ Sempre que houver atualização da referência dos submódulos, execute novament
 Antes de executar a plataforma, prepare o ambiente local.
 
 👉 [Guia de inicialização do ambiente](docs/getting-started.md)
+
+## 🏛️ Arquitetura
+
+A FCG Platform utiliza uma arquitetura baseada em microsserviços, comunicação assíncrona orientada a eventos e infraestrutura containerizada.
+
+👉 [Visão geral da arquitetura](docs/architecture/architecture-overview.md)
 
 ## 🐳 Executar com Docker
 

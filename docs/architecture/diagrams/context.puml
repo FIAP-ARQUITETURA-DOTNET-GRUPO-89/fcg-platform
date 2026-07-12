@@ -1,0 +1,49 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title FCG Platform - System Context
+
+LAYOUT_LEFT_RIGHT()
+
+Person(user, "Usuário", "Realiza cadastro, autenticação e compra de jogos.")
+
+
+System_Boundary(fcg, "FCG Platform") {
+
+    System(users, "Users", "Cadastro e autenticação")
+
+    System(catalog, "Catalog", "Catálogo de jogos")
+
+    System(payments, "Payments", "Processamento de pagamentos")
+
+    System(notifications, "Notifications", "Envio de notificações")
+
+}
+
+System_Ext(rabbitmq, "RabbitMQ", "Broker de Mensagens")
+System_Ext(postgres, "PostgreSQL", "Persistência dos dados")
+System_Ext(email, "Serviço de E-mail", "Simulado")
+
+Lay_R(users, catalog)
+Lay_R(catalog, payments)
+Lay_R(payments, notifications)
+
+Lay_D(rabbitmq, users)
+Lay_D(postgres, rabbitmq)
+Lay_R(email, notifications)
+
+Rel(user, users, "Cadastro / Login", "HTTPS")
+Rel(user, catalog, "Compra de jogos", "HTTPS")
+
+Rel(users, rabbitmq, "Comunicação assíncrona")
+Rel(catalog, rabbitmq, "Comunicação assíncrona")
+Rel(payments, rabbitmq, "Comunicação assíncrona")
+Rel(notifications, rabbitmq, "Comunicação assíncrona")
+
+Rel(users, postgres, "Persiste")
+Rel(catalog, postgres, "Persiste")
+Rel(payments, postgres, "Persiste")
+
+Rel(notifications, email, "Envia e-mails")
+
+@enduml
