@@ -1,0 +1,12 @@
+[submodule "microservices/fcg-users"]
+	path = microservices/fcg-users
+	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-users.git
+[submodule "microservices/fcg-catalog"]
+	path = microservices/fcg-catalog
+	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-catalog.git
+[submodule "microservices/fcg-notifications"]
+	path = microservices/fcg-notifications
+	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-notifications.git
+[submodule "microservices/fcg-payments"]
+	path = microservices/fcg-payments
+	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-payments.git

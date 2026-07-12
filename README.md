@@ -1,12 +1,35 @@
 # 🚀 FCG Platform
 
-Repositório responsável pela orquestração da plataforma FCG, contendo configurações Docker Compose, Kubernetes e infraestrutura compartilhada.
+Repositório responsável pela orquestração da plataforma FCG, contendo configurações do Docker Compose, Kubernetes e infraestrutura compartilhada utilizada pelos microsserviços.
 
 ## 📑 Sumário
 
+- [📦 Clonando o repositório](#-clonando-o-repositório)
 - [🚀 Começando](#-começando)
-- 🐳 [Executar com Docker](#-executar-com-docker)
-- ☸️ [Executar com Kubernetes](#-executar-com-kubernetes)
+- [🐳 Executar com Docker](#-executar-com-docker)
+- [☸️ Executar com Kubernetes](#️-executar-com-kubernetes)
+
+## 📦 Clonando o repositório
+
+Este repositório utiliza **Git Submodules** para referenciar os repositórios dos microsserviços.
+
+### Opção 1 (Recomendada)
+
+Clone o repositório juntamente com todos os submódulos:
+
+```bash
+git clone --recurse-submodules https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-platform.git
+```
+
+### Opção 2
+
+Caso o repositório já tenha sido clonado sem os submódulos, inicialize-os executando:
+
+```bash
+git submodule update --init --recursive
+```
+
+Sempre que houver atualização da referência dos submódulos, execute novamente o comando acima para sincronizar todos os microsserviços com as versões utilizadas pela plataforma.
 
 ## 🚀 Começando
 
