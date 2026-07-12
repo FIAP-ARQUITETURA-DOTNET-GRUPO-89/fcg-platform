@@ -12,7 +12,6 @@ A plataforma é composta pelos seguintes serviços:
 |---------|------|------:|
 | Fcg Users API | API | 7071 |
 | Fcg Catalog API | API | 7072 |
-| Fcg Notifications API | API | 7073 |
 | Fcg Payments API | API | 7074 |
 | Fcg Catalog Worker | Worker | - |
 | Fcg Notifications Worker | Worker | - |
@@ -179,7 +178,6 @@ As imagens oficiais da plataforma são publicadas no Docker Hub.
 | Catalog Worker | `jondamiao/fcg-catalog-worker` |
 | Payments API | `jondamiao/fcg-payments-api` |
 | Payments Worker | `jondamiao/fcg-payments-worker` |
-| Notifications API | `jondamiao/fcg-notifications-api` |
 | Notifications Worker | `jondamiao/fcg-notifications-worker` |
 
 ---

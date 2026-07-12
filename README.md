@@ -41,7 +41,7 @@ Antes de executar a plataforma, prepare o ambiente local.
 
 Se você deseja executar a FCG Platform localmente utilizando Docker Compose:
 
-👉 [Documentação do Docker](docs/docker.md)
+👉 [Documentação do Docker](docs/docker-compose.md)
 
 ## ☸️ Executar com Kubernetes
 

@@ -33,7 +33,7 @@ services:
   ####################################################
 
   users-api:
-    image: jondamiao/fcg-users-api:latest
+    image: jondamiao/fcg-users-api:1.0.0-preview.1
     container_name: fcg-users-api
     restart: unless-stopped
     environment:
@@ -55,7 +55,7 @@ services:
   ####################################################
 
   catalog-api:
-    image: jondamiao/fcg-catalog-api:latest
+    image: jondamiao/fcg-catalog-api:1.0.0-preview.1
     container_name: fcg-catalog-api
     restart: unless-stopped
     environment:
@@ -76,7 +76,7 @@ services:
   ####################################################
 
   catalog-worker:
-    image: jondamiao/fcg-catalog-worker:latest
+    image: jondamiao/fcg-catalog-worker:1.0.0-preview.1
     container_name: fcg-catalog-worker
     restart: unless-stopped
     environment:
@@ -94,7 +94,7 @@ services:
   ####################################################
 
   payments-api:
-    image: jondamiao/fcg-payments-api:latest
+    image: jondamiao/fcg-payments-api:1.0.0-preview.1
     container_name: fcg-payments-api
     restart: unless-stopped
     environment:
@@ -115,7 +115,7 @@ services:
   ####################################################
 
   payments-worker:
-    image: jondamiao/fcg-payments-worker:latest
+    image: jondamiao/fcg-payments-worker:1.0.0-preview.1
     container_name: fcg-payments-worker
     restart: unless-stopped
     environment:
@@ -128,33 +128,13 @@ services:
     networks:
       - fcg-network
 
-  ####################################################
-  # NOTIFICATIONS API
-  ####################################################
-
-  notifications-api:
-    image: jondamiao/fcg-notifications-api:latest
-    container_name: fcg-notifications-api
-    restart: unless-stopped
-    environment:
-      ASPNETCORE_ENVIRONMENT: Docker
-      ASPNETCORE_URLS: http://+:7073
-      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
-      ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
-    ports:
-      - "7073:7073"
-    depends_on:
-      - postgres
-      - rabbitmq
-    networks:
-      - fcg-network
 
   ####################################################
   # NOTIFICATIONS WORKER
   ####################################################
 
   notifications-worker:
-    image: jondamiao/fcg-notifications-worker:latest
+    image: jondamiao/fcg-notifications-worker:1.0.0-preview.1
     container_name: fcg-notifications-worker
     restart: unless-stopped
     environment:
