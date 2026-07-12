@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - fcg-network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -23,10 +25,16 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - fcg-network
 
-  users:
-    image: jondamiao/fcg-users:1.0.0
-    container_name: fcg-users
+  ####################################################
+  # USERS API
+  ####################################################
+
+  users-api:
+    image: jondamiao/fcg-users-api:latest
+    container_name: fcg-users-api
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
@@ -38,10 +46,17 @@ services:
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - fcg-network
 
-  catalog:
-    image: jondamiao/fcg-catalog:1.0.0
-    container_name: fcg-catalog
+
+  ####################################################
+  # CATALOG API
+  ####################################################
+
+  catalog-api:
+    image: jondamiao/fcg-catalog-api:latest
+    container_name: fcg-catalog-api
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
@@ -53,10 +68,34 @@ services:
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - fcg-network
 
-  payments:
-    image: jondamiao/fcg-payments:1.0.0
-    container_name: fcg-payments
+  ####################################################
+  # CATALOG WORKER
+  ####################################################
+
+  catalog-worker:
+    image: jondamiao/fcg-catalog-worker:latest
+    container_name: fcg-catalog-worker
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+      ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - fcg-network
+
+  ####################################################
+  # PAYMENTS API
+  ####################################################
+
+  payments-api:
+    image: jondamiao/fcg-payments-api:latest
+    container_name: fcg-payments-api
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
@@ -68,10 +107,34 @@ services:
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - fcg-network
 
-  notifications:
-    image: jondamiao/fcg-notifications:1.0.0
-    container_name: fcg-notifications
+  ####################################################
+  # PAYMENTS WORKER
+  ####################################################
+
+  payments-worker:
+    image: jondamiao/fcg-payments-worker:latest
+    container_name: fcg-payments-worker
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+      ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - fcg-network
+
+  ####################################################
+  # NOTIFICATIONS API
+  ####################################################
+
+  notifications-api:
+    image: jondamiao/fcg-notifications-api:latest
+    container_name: fcg-notifications-api
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
@@ -83,6 +146,30 @@ services:
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - fcg-network
+
+  ####################################################
+  # NOTIFICATIONS WORKER
+  ####################################################
+
+  notifications-worker:
+    image: jondamiao/fcg-notifications-worker:latest
+    container_name: fcg-notifications-worker
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+      ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - fcg-network
 
 volumes:
   postgres-data:
+
+networks:
+  fcg-network:
+    driver: bridge
