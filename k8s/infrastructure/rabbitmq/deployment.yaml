@@ -1,24 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: rabbitmq
   namespace: fcg-platform
+
   labels:
-    app: rabbitmq
-    component: message-broker
-    tier: infrastructure
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/component: message-broker
+    app.kubernetes.io/part-of: fcg-platform
+    app.kubernetes.io/managed-by: kubectl
 
 spec:
   replicas: 1
 
   selector:
     matchLabels:
-      app: rabbitmq
+      app.kubernetes.io/name: rabbitmq
 
   template:
     metadata:
       labels:
-        app: rabbitmq
+        app.kubernetes.io/name: rabbitmq
+        app.kubernetes.io/component: message-broker
+        app.kubernetes.io/part-of: fcg-platform
 
     spec:
       containers:
@@ -68,6 +73,7 @@ spec:
             requests:
               cpu: "100m"
               memory: "256Mi"
+
             limits:
               cpu: "500m"
               memory: "512Mi"
@@ -79,7 +85,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 15672
+              port: management
+
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
@@ -88,7 +95,8 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 15672
+              port: management
+
             initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 5
