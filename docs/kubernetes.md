@@ -57,10 +57,6 @@ A documentação de cada componente encontra-se em:
 
 - 👤 [FCG Users API](k8s/services/fcg-users-api.md)
 
-- 👤 [FCG Users Worker](k8s/services/fcg-users-worker.md)
-
-- 🔔 [FCG Notifications API](k8s/services/fcg-notifications-api.md)
-
 - 🔔 [FCG Notifications Worker](k8s/services/fcg-notifications-worker.md)
 
 - 🎮 [FCG Catalog API](k8s/services/fcg-catalog-api.md)

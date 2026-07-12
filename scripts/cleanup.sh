@@ -25,14 +25,6 @@ echo "🔔 Removendo FCG Notifications Worker..."
 kubectl delete -f microservices/fcg-notifications/k8s/worker/ --ignore-not-found
 
 echo ""
-echo "🔔 Removendo FCG Notifications API..."
-kubectl delete -f microservices/fcg-notifications/k8s/api/ --ignore-not-found
-
-echo ""
-echo "👷 Removendo FCG Users Worker..."
-kubectl delete -f microservices/fcg-users/k8s/worker/ --ignore-not-found
-
-echo ""
 echo "👤 Removendo FCG Users API..."
 kubectl delete -f microservices/fcg-users/k8s/api/ --ignore-not-found
 
