@@ -5,17 +5,25 @@ metadata:
   name: postgres
   namespace: fcg-platform
 
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: fcg-platform
+    app.kubernetes.io/managed-by: kubectl
+
 spec:
   replicas: 1
 
   selector:
     matchLabels:
-      app: postgres
+      app.kubernetes.io/name: postgres
 
   template:
     metadata:
       labels:
-        app: postgres
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/component: database
+        app.kubernetes.io/part-of: fcg-platform
 
     spec:
       containers:
@@ -25,6 +33,7 @@ spec:
 
           ports:
             - containerPort: 5432
+              name: postgres
 
           env:
             - name: POSTGRES_USER
@@ -56,7 +65,8 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - $(POSTGRES_USER)
+                - fcg
+
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
@@ -67,7 +77,8 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - $(POSTGRES_USER)
+                - fcg
+
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 3

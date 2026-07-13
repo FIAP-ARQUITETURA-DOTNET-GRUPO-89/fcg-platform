@@ -5,7 +5,6 @@ Este documento descreve como realizar o deploy da plataforma FCG em um cluster K
 ## 📑 Sumário
 
 - [🚀 Deploy da Plataforma](#-deploy-da-plataforma)
-- [🔐 Secrets](#-secrets)
 - [🛠 Scripts úteis](#-scripts-úteis)
 - [🛠 Comandos Úteis](#-comandos-úteis)
 
@@ -58,10 +57,6 @@ A documentação de cada componente encontra-se em:
 
 - 👤 [FCG Users API](k8s/services/fcg-users-api.md)
 
-- 👤 [FCG Users Worker](k8s/services/fcg-users-worker.md)
-
-- 🔔 [FCG Notifications API](k8s/services/fcg-notifications-api.md)
-
 - 🔔 [FCG Notifications Worker](k8s/services/fcg-notifications-worker.md)
 
 - 🎮 [FCG Catalog API](k8s/services/fcg-catalog-api.md)
@@ -71,21 +66,6 @@ A documentação de cada componente encontra-se em:
 - 💳 [FCG Payments API](k8s/services/fcg-payments-api.md)
 
 - 💳 [FCG Payments Worker](k8s/services/fcg-payments-worker.md)
-
-# 🔐 Secrets
-
-A plataforma utiliza Kubernetes Secrets para armazenar informações sensíveis.
-
-Exemplos:
-
-- credenciais de banco de dados
-- usuários e senhas
-- connection strings
-- chaves e tokens de autenticação
-
-Base64 é apenas codificação, não criptografia.
-
-👉 Veja detalhes em: [Secrets](secrets.md)
 
 # 🛠 Scripts úteis
 

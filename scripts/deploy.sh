@@ -39,14 +39,6 @@ echo "👤 Deploy do FCG Users API..."
 kubectl apply -f microservices/fcg-users/k8s/api/
 
 echo ""
-echo "👷 Deploy do FCG Users Worker..."
-kubectl apply -f microservices/fcg-users/k8s/worker/
-
-echo ""
-echo "🔔 Deploy do FCG Notifications API..."
-kubectl apply -f microservices/fcg-notifications/k8s/api/
-
-echo ""
 echo "👷 Deploy do FCG Notifications Worker..."
 kubectl apply -f microservices/fcg-notifications/k8s/worker/
 

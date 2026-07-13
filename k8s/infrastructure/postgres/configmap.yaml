@@ -1,8 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
+
 metadata:
   name: postgres-config
   namespace: fcg-platform
+
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: fcg-platform
+    app.kubernetes.io/managed-by: kubectl
 
 data:
   POSTGRES_HOST: postgres

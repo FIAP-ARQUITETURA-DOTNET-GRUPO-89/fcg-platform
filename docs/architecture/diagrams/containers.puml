@@ -1,0 +1,50 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title FCG Platform - Container Diagram
+
+LAYOUT_LEFT_RIGHT()
+
+Person(user, "Usuário", "Utiliza a plataforma")
+
+System_Boundary(fcg, "FCG Platform") {
+
+    Container(usersApi, "Users API", ".NET", "Cadastro, autenticação e JWT")
+
+    Container(catalogApi, "Catalog API", ".NET", "Catálogo de jogos e compra")
+
+    Container(catalogWorker, "Catalog Worker", ".NET Worker", "Atualiza biblioteca após pagamento")
+
+    Container(paymentsWorker, "Payments Worker", ".NET Worker", "Processa pagamentos")
+
+    Container(notificationsWorker, "Notifications Worker", ".NET Worker", "Envia notificações")
+
+}
+
+System_Ext(rabbitmq, "RabbitMQ", "Broker de mensagens")
+System_Ext(postgres, "PostgreSQL", "Persistência")
+System_Ext(email, "Serviço de E-mail", "Sistema externo")
+
+
+Rel(user, usersApi, "Cadastro / Login", "HTTPS")
+Rel(user, catalogApi, "Compra de jogos", "HTTPS")
+
+
+Rel(usersApi, rabbitmq, "Publica eventos", "AMQP")
+Rel(catalogApi, rabbitmq, "Publica eventos", "AMQP")
+
+
+Rel(rabbitmq, paymentsWorker, "Consome eventos", "AMQP")
+Rel(rabbitmq, catalogWorker, "Consome eventos", "AMQP")
+Rel(rabbitmq, notificationsWorker, "Consome eventos", "AMQP")
+
+
+Rel(usersApi, postgres, "Persiste dados", "SQL")
+Rel(catalogApi, postgres, "Persiste dados", "SQL")
+Rel(catalogWorker, postgres, "Atualiza dados", "SQL")
+Rel(paymentsWorker, postgres, "Persiste dados", "SQL")
+
+
+Rel(notificationsWorker, email, "Envia notificações")
+
+@enduml
