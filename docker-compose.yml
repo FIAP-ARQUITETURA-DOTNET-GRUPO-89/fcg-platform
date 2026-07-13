@@ -39,7 +39,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: http://+:7010
+<<<<<<< HEAD
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+=======
+      RUN_MIGRATION: "true"
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgusers-db;Username=postgres;Password=postgres
+>>>>>>> 3036edc30d1334187ca2b40abbf4e4639d9e4503
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     ports:
       - "7010:7010"
@@ -61,7 +66,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: http://+:7030
+<<<<<<< HEAD
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+=======
+      RUN_MIGRATION: "true"
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
+>>>>>>> 3036edc30d1334187ca2b40abbf4e4639d9e4503
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     ports:
       - "7030:7030"
@@ -81,7 +91,7 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     depends_on:
       - postgres
@@ -100,7 +110,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: http://+:7040
+<<<<<<< HEAD
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+=======
+      RUN_MIGRATION: "true"
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgpayments-db;Username=postgres;Password=postgres
+>>>>>>> 3036edc30d1334187ca2b40abbf4e4639d9e4503
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     ports:
       - "7040:7040"
@@ -120,7 +135,7 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgpayments-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     depends_on:
       - postgres
@@ -139,7 +154,7 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgnotifications-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     depends_on:
       - postgres
