@@ -38,11 +38,11 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-      ASPNETCORE_URLS: http://+:7071
+      ASPNETCORE_URLS: http://+:7010
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     ports:
-      - "7071:7071"
+      - "7010:7010"
     depends_on:
       - postgres
       - rabbitmq
@@ -60,11 +60,11 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-      ASPNETCORE_URLS: http://+:7072
+      ASPNETCORE_URLS: http://+:7030
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     ports:
-      - "7072:7072"
+      - "7030:7030"
     depends_on:
       - postgres
       - rabbitmq
@@ -99,11 +99,11 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-      ASPNETCORE_URLS: http://+:7074
+      ASPNETCORE_URLS: http://+:7040
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
     ports:
-      - "7074:7074"
+      - "7040:7040"
     depends_on:
       - postgres
       - rabbitmq
