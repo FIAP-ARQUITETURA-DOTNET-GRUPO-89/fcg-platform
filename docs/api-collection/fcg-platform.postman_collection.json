@@ -651,9 +651,9 @@
                   "script": {
                     "exec": [
                       "var json = pm.response.json();",
-                      "if (json.id) {",
-                      "    pm.collectionVariables.set('jogoId', json.id);",
-                      "    console.log('jogoId salvo: ' + json.id);",
+                      "if (json.orderId) {",
+                      "    pm.collectionVariables.set('pedidoId', json.orderId);",
+                      "    console.log('pedido criado: ' + json.orderId);",
                       "}"
                     ],
                     "type": "text/javascript",
@@ -736,59 +736,43 @@
       "name": "fcg-payments-api",
       "item": [
         {
-          "name": "Criar pedido",
-          "event": [
+          "name": "Pagamentos",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// 1. Converte a resposta para JSON\r",
-                  "const responseData = pm.response.json();\r",
-                  "\r",
-                  "// 2. Obtém id do pedido\r",
-                  "const pedidoId = responseData.id;\r",
-                  "\r",
-                  "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
-                  "pm.collectionVariables.set(\"pedidoId\", pedidoId);\r",
-                  "\r",
-                  "console.log(\"Id do pedido salvo na Coleção: \" + pm.collectionVariables.get(\"pedidoId\"));"
+              "name": "Consulta status de pagamento do pedido",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text"
+                  }
                 ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"customer\": \"Camila\",\r\n  \"totalAmount\": 150.00,\r\n  \"street\": \"Rua das Flores, 123\",\r\n  \"city\": \"São Paulo\",\r\n  \"state\": \"SP\",\r\n  \"cep\": \"01234567\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+                "url": {
+                  "raw": "{{Base-URL-Payments-API}}/payments/{{pedidoId}}",
+                  "host": [
+                    "{{Base-URL-Payments-API}}"
+                  ],
+                  "path": [
+                    "payments",
+                    "{{pedidoId}}"
+                  ]
                 }
-              }
-            },
-            "url": {
-              "raw": "{{Base-URL-Payments-API}}/api/orders",
-              "host": [
-                "{{Base-URL-Payments-API}}"
-              ],
-              "path": [
-                "api",
-                "orders"
-              ]
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         }
       ]
     }
