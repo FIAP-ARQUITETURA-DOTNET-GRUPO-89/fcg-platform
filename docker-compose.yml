@@ -51,7 +51,7 @@ services:
   ####################################################
 
   users-api:
-    image: jondamiao/fcg-users-api:1.0.0-preview.1
+    image: jondamiao/fcg-users-api:1.0.0-preview.2
     container_name: fcg-users-api
     restart: unless-stopped
     environment:
@@ -205,7 +205,7 @@ services:
   ####################################################
 
   notifications-worker:
-    image: jondamiao/fcg-notifications-worker:1.0.0-preview.1
+    image: jondamiao/fcg-notifications-worker:1.0.0-preview.2
     container_name: fcg-notifications-worker
     restart: unless-stopped
     environment:
