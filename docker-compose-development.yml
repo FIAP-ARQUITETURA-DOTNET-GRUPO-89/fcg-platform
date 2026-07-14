@@ -51,8 +51,10 @@ services:
   ####################################################
 
   users-api:
-    image: jondamiao/fcg-users-api:1.0.0-preview.1
     container_name: fcg-users-api
+    build:
+      context: ./microservices/fcg-users
+      dockerfile: src/FcgUsers.Api/Dockerfile
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Production
@@ -83,11 +85,13 @@ services:
   ####################################################
 
   catalog-api:
-    image: jondamiao/fcg-catalog-api:1.0.0-preview.1
     container_name: fcg-catalog-api
+    build:
+      context: ./microservices/fcg-catalog
+      dockerfile: src/FcgCatalog.Api/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:7030
       RUN_MIGRATION: "true"
 
@@ -115,11 +119,13 @@ services:
   ####################################################
 
   catalog-worker:
-    image: jondamiao/fcg-catalog-worker:1.0.0-preview.1
     container_name: fcg-catalog-worker
+    build:
+      context: ./microservices/fcg-catalog
+      dockerfile: src/FcgCatalog.Worker/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
@@ -144,11 +150,13 @@ services:
   ####################################################
 
   payments-api:
-    image: jondamiao/fcg-payments-api:1.0.0-preview.1
     container_name: fcg-payments-api
+    build:
+      context: ./microservices/fcg-payments
+      dockerfile: src/FcgPayments.Api/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:7040
       RUN_MIGRATION: "true"
 
@@ -176,11 +184,13 @@ services:
   ####################################################
 
   payments-worker:
-    image: jondamiao/fcg-payments-worker:1.0.0-preview.1
     container_name: fcg-payments-worker
+    build:
+      context: ./microservices/fcg-payments
+      dockerfile: src/FcgPayments.Worker/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
@@ -205,11 +215,13 @@ services:
   ####################################################
 
   notifications-worker:
-    image: jondamiao/fcg-notifications-worker:1.0.0-preview.1
     container_name: fcg-notifications-worker
+    build:
+      context: ./microservices/fcg-notifications
+      dockerfile: src/FcgNotifications.Worker/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
