@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: pgadmin
+  namespace: fcg-platform
+
+  labels:
+    app.kubernetes.io/name: pgadmin
+    app.kubernetes.io/component: database-admin
+    app.kubernetes.io/part-of: fcg-platform
+    app.kubernetes.io/managed-by: kubectl
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pgadmin
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pgadmin
+        app.kubernetes.io/component: database-admin
+        app.kubernetes.io/part-of: fcg-platform
+
+    spec:
+      containers:
+        - name: pgadmin
+
+          image: dpage/pgadmin4:9.8
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 80
+              name: http
+
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-secret
+                  key: PGADMIN_DEFAULT_EMAIL
+
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-secret
+                  key: PGADMIN_DEFAULT_PASSWORD
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+
+            limits:
+              cpu: 250m
+              memory: 256Mi
