@@ -51,7 +51,7 @@ services:
   ####################################################
 
   users-api:
-    image: jondamiao/fcg-users-api:1.0.0-preview.2
+    image: jondamiao/fcg-users-api:1.0.0-preview.3
     container_name: fcg-users-api
     restart: unless-stopped
     environment:
@@ -83,7 +83,7 @@ services:
   ####################################################
 
   catalog-api:
-    image: jondamiao/fcg-catalog-api:1.0.0-preview.1
+    image: jondamiao/fcg-catalog-api:1.0.0-preview.3
     container_name: fcg-catalog-api
     restart: unless-stopped
     environment:
@@ -115,7 +115,7 @@ services:
   ####################################################
 
   catalog-worker:
-    image: jondamiao/fcg-catalog-worker:1.0.0-preview.2
+    image: jondamiao/fcg-catalog-worker:1.0.0-preview.3
     container_name: fcg-catalog-worker
     restart: unless-stopped
     environment:
@@ -144,7 +144,7 @@ services:
   ####################################################
 
   payments-api:
-    image: jondamiao/fcg-payments-api:1.0.0-preview.1
+    image: jondamiao/fcg-payments-api:1.0.0-preview.3
     container_name: fcg-payments-api
     restart: unless-stopped
     environment:
@@ -176,7 +176,7 @@ services:
   ####################################################
 
   payments-worker:
-    image: jondamiao/fcg-payments-worker:1.0.0-preview.1
+    image: jondamiao/fcg-payments-worker:1.0.0-preview.3
     container_name: fcg-payments-worker
     restart: unless-stopped
     environment:
@@ -205,7 +205,7 @@ services:
   ####################################################
 
   notifications-worker:
-    image: jondamiao/fcg-notifications-worker:1.0.0-preview.4
+    image: jondamiao/fcg-notifications-worker:1.0.0-preview.6
     container_name: fcg-notifications-worker
     restart: unless-stopped
     environment:

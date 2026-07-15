@@ -222,7 +222,7 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-
+      RUN_MIGRATION: "true"
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
       JwtSettings__ExpirationHours: "2"
