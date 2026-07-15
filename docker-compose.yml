@@ -87,7 +87,7 @@ services:
     container_name: fcg-catalog-api
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:7030
       RUN_MIGRATION: "true"
 
@@ -115,11 +115,11 @@ services:
   ####################################################
 
   catalog-worker:
-    image: jondamiao/fcg-catalog-worker:1.0.0-preview.1
+    image: jondamiao/fcg-catalog-worker:1.0.0-preview.2
     container_name: fcg-catalog-worker
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
@@ -148,7 +148,7 @@ services:
     container_name: fcg-payments-api
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:7040
       RUN_MIGRATION: "true"
 
@@ -180,7 +180,7 @@ services:
     container_name: fcg-payments-worker
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
@@ -205,11 +205,12 @@ services:
   ####################################################
 
   notifications-worker:
-    image: jondamiao/fcg-notifications-worker:1.0.0-preview.2
+    image: jondamiao/fcg-notifications-worker:1.0.0-preview.4
     container_name: fcg-notifications-worker
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Production
+      RUN_MIGRATION: "true"
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token

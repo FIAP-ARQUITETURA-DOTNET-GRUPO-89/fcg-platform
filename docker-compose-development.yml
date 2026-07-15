@@ -57,7 +57,7 @@ services:
       dockerfile: src/FcgUsers.Api/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:7010
       RUN_MIGRATION: "true"
 
@@ -91,7 +91,7 @@ services:
       dockerfile: src/FcgCatalog.Api/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:7030
       RUN_MIGRATION: "true"
 
@@ -125,7 +125,7 @@ services:
       dockerfile: src/FcgCatalog.Worker/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
@@ -156,7 +156,7 @@ services:
       dockerfile: src/FcgPayments.Api/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:7040
       RUN_MIGRATION: "true"
 
@@ -190,7 +190,7 @@ services:
       dockerfile: src/FcgPayments.Worker/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
@@ -221,7 +221,7 @@ services:
       dockerfile: src/FcgNotifications.Worker/Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
 
       JwtSettings__Issuer: FcgUsers-Issuer
       JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
