@@ -1,0 +1,56 @@
+_format_version: "3.0"
+
+services:
+  ####################################################
+  # USERS API
+  ####################################################
+
+  - name: users-api
+    url: http://users-api:7010
+
+    routes:
+      - name: users-api-route
+        paths:
+          - /api/users
+        strip_path: false
+
+      - name: auth-api-route
+        paths:
+          - /api/auth
+        strip_path: false
+
+  ####################################################
+  # CATALOG API
+  ####################################################
+
+  - name: catalog-api
+    url: http://catalog-api:7030
+
+    routes:
+      - name: games-api-route
+        paths:
+          - /api/games
+        strip_path: false
+
+      - name: orders-api-route
+        paths:
+          - /api/orders
+        strip_path: false
+
+      - name: library-api-route
+        paths:
+          - /api/library
+        strip_path: false
+
+  ####################################################
+  # PAYMENTS API
+  ####################################################
+
+  - name: payments-api
+    url: http://payments-api:7040
+
+    routes:
+      - name: payments-api-route
+        paths:
+          - /api/payments
+        strip_path: false
