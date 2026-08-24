@@ -7,6 +7,7 @@ LAYOUT_LEFT_RIGHT()
 
 Person(user, "Usuário", "Realiza cadastro, autenticação e compra de jogos.")
 
+System_Ext(kong, "Kong API Gateway", "API Gateway\nRoteamento, autenticação JWT e rate limiting")
 
 System_Boundary(fcg, "FCG Platform") {
 
@@ -17,33 +18,66 @@ System_Boundary(fcg, "FCG Platform") {
     System(payments, "Payments", "Processamento de pagamentos")
 
     System(notifications, "Notifications", "Envio de notificações")
-
 }
 
 System_Ext(rabbitmq, "RabbitMQ", "Broker de Mensagens")
 System_Ext(postgres, "PostgreSQL", "Persistência dos dados")
-System_Ext(email, "Serviço de E-mail", "Simulado")
+System_Ext(email, "Serviço de E-mail", "Envio de notificações")
+
+
+' ==================================================
+' POSICIONAMENTO
+' ==================================================
+
+Lay_R(user, kong)
+
+Lay_R(kong, users)
+Lay_D(kong, catalog)
 
 Lay_R(users, catalog)
 Lay_R(catalog, payments)
 Lay_R(payments, notifications)
 
-Lay_D(rabbitmq, users)
-Lay_D(postgres, rabbitmq)
-Lay_R(email, notifications)
+Lay_D(catalog, rabbitmq)
+Lay_D(rabbitmq, postgres)
 
-Rel(user, users, "Cadastro / Login", "HTTPS")
-Rel(user, catalog, "Compra de jogos", "HTTPS")
+Lay_R(notifications, email)
 
-Rel(users, rabbitmq, "Comunicação assíncrona")
-Rel(catalog, rabbitmq, "Comunicação assíncrona")
-Rel(payments, rabbitmq, "Comunicação assíncrona")
-Rel(notifications, rabbitmq, "Comunicação assíncrona")
 
-Rel(users, postgres, "Persiste")
-Rel(catalog, postgres, "Persiste")
-Rel(payments, postgres, "Persiste")
+' ==================================================
+' RELACIONAMENTOS EXTERNOS
+' ==================================================
 
-Rel(notifications, email, "Envia e-mails")
+Rel(user, kong, "Requisições", "HTTPS")
+
+Rel(kong, users, "Roteia requisições", "HTTP")
+Rel(kong, catalog, "Roteia requisições", "HTTP")
+Rel(kong, payments, "Roteia requisições", "HTTP")
+
+
+' ==================================================
+' COMUNICAÇÃO ASSÍNCRONA
+' ==================================================
+
+Rel(users, rabbitmq, "Publica eventos", "AMQP")
+Rel(catalog, rabbitmq, "Publica eventos", "AMQP")
+Rel(payments, rabbitmq, "Publica eventos", "AMQP")
+Rel(notifications, rabbitmq, "Consome eventos", "AMQP")
+
+
+' ==================================================
+' PERSISTÊNCIA
+' ==================================================
+
+Rel(users, postgres, "Persiste dados", "SQL")
+Rel(catalog, postgres, "Persiste dados", "SQL")
+Rel(payments, postgres, "Persiste dados", "SQL")
+
+
+' ==================================================
+' NOTIFICAÇÕES
+' ==================================================
+
+Rel(notifications, email, "Envia e-mails", "SMTP/HTTP")
 
 @enduml
