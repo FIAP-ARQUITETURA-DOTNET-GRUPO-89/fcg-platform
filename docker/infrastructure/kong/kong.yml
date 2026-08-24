@@ -1,5 +1,20 @@
 _format_version: "3.0"
 
+######################################################
+# CONSUMER / JWT
+######################################################
+
+consumers:
+  - username: fcg-users-api
+    jwt_secrets:
+      - key: FcgUsers-Issuer
+        algorithm: HS256
+        secret: FcgUsers_Secret_Key_2026_High_Security_Token
+
+######################################################
+# SERVICES
+######################################################
+
 services:
   ####################################################
   # USERS API
@@ -9,15 +24,37 @@ services:
     url: http://users-api:7010
 
     routes:
+      # Público - Login
+      - name: auth-api-route
+        paths:
+          - /api/auth
+        strip_path: false
+
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 5
+              policy: local
+              limit_by: ip
+
+      # Protegido por JWT + Rate Limit
       - name: users-api-route
         paths:
           - /api/users
         strip_path: false
 
-      - name: auth-api-route
-        paths:
-          - /api/auth
-        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+
+          - name: rate-limiting
+            config:
+              minute: 60
+              policy: local
+              limit_by: ip
 
   ####################################################
   # CATALOG API
@@ -27,20 +64,62 @@ services:
     url: http://catalog-api:7030
 
     routes:
+      # Protegido por JWT + Rate Limit
       - name: games-api-route
         paths:
           - /api/games
         strip_path: false
 
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+
+          - name: rate-limiting
+            config:
+              minute: 60
+              policy: local
+              limit_by: ip
+
+      # Protegido por JWT + Rate Limit
       - name: orders-api-route
         paths:
           - /api/orders
         strip_path: false
 
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+
+          - name: rate-limiting
+            config:
+              minute: 60
+              policy: local
+              limit_by: ip
+
+      # Protegido por JWT + Rate Limit
       - name: library-api-route
         paths:
           - /api/library
         strip_path: false
+
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+
+          - name: rate-limiting
+            config:
+              minute: 60
+              policy: local
+              limit_by: ip
 
   ####################################################
   # PAYMENTS API
@@ -50,7 +129,21 @@ services:
     url: http://payments-api:7040
 
     routes:
+      # Protegido por JWT + Rate Limit
       - name: payments-api-route
         paths:
           - /api/payments
         strip_path: false
+
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+
+          - name: rate-limiting
+            config:
+              minute: 60
+              policy: local
+              limit_by: ip
