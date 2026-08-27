@@ -8,769 +8,1548 @@
   },
   "item": [
     {
-      "name": "fcg-users-api",
+      "name": "Gateway",
       "item": [
         {
-          "name": "Auth",
+          "name": "fcg-users-api",
           "item": [
             {
-              "name": "Auth Maria | ADM",
-              "event": [
+              "name": "Auth",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "// 1. Converte a resposta para JSON\r",
-                      "const responseData = pm.response.json();\r",
-                      "\r",
-                      "// 2. Extrai o token\r",
-                      "const tokenValue = responseData.token;\r",
-                      "\r",
-                      "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
-                      "pm.collectionVariables.set(\"token\", tokenValue);\r",
-                      "\r",
-                      "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"email\": \"maria.silva@email.com\",\r\n  \"password\": \"Abc!1234\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
+                  "name": "Auth Maria | ADM",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "// 1. Converte a resposta para JSON\r",
+                          "const responseData = pm.response.json();\r",
+                          "\r",
+                          "// 2. Extrai o token\r",
+                          "const tokenValue = responseData.token;\r",
+                          "\r",
+                          "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
+                          "pm.collectionVariables.set(\"token\", tokenValue);\r",
+                          "\r",
+                          "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
                     }
-                  }
-                },
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/auth/login",
-                  "host": [
-                    "{{Base-URL-User-API}}"
                   ],
-                  "path": [
-                    "auth",
-                    "login"
-                  ]
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"email\": \"maria.silva@email.com\",\r\n  \"password\": \"Abc!1234\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/auth/login",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Auth João | User",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "// 1. Converte a resposta para JSON\r",
+                          "const responseData = pm.response.json();\r",
+                          "\r",
+                          "// 2. Extrai o token\r",
+                          "const tokenValue = responseData.token;\r",
+                          "\r",
+                          "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
+                          "pm.collectionVariables.set(\"token\", tokenValue);\r",
+                          "\r",
+                          "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"email\": \"joao.silva@email.com\",\r\n  \"password\": \"Abc!1234\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/auth/login",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             },
             {
-              "name": "Auth João | User",
-              "event": [
+              "name": "Usuarios",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "// 1. Converte a resposta para JSON\r",
-                      "const responseData = pm.response.json();\r",
-                      "\r",
-                      "// 2. Extrai o token\r",
-                      "const tokenValue = responseData.token;\r",
-                      "\r",
-                      "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
-                      "pm.collectionVariables.set(\"token\", tokenValue);\r",
-                      "\r",
-                      "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"email\": \"joao.silva@email.com\",\r\n  \"password\": \"Abc!1234\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
+                  "name": "Criar Usuário",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var json = pm.response.json();",
+                          "if (json.id) {",
+                          "    pm.collectionVariables.set('usuarioId', json.id);",
+                          "    console.log('usuarioId salvo: ' + json.id);",
+                          "}"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
                     }
-                  }
-                },
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/auth/login",
-                  "host": [
-                    "{{Base-URL-User-API}}"
                   ],
-                  "path": [
-                    "auth",
-                    "login"
-                  ]
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"José da Silva\",\n  \"email\": \"jose.silva@email.com\",\n  \"birthDate\": \"1995-06-15\",\n  \"password\": \"Abc!1234\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Buscar Usuário por ID",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users/{{usuarioId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Listar Todos os Usuários",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users?pagina=1&tamanhoPagina=10&ativos=true",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users"
+                      ],
+                      "query": [
+                        {
+                          "key": "pagina",
+                          "value": "1"
+                        },
+                        {
+                          "key": "tamanhoPagina",
+                          "value": "10"
+                        },
+                        {
+                          "key": "ativos",
+                          "value": "true"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Buscar Usuários por Nome",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users/busca?name=João&page=1&pagesize=10",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "busca"
+                      ],
+                      "query": [
+                        {
+                          "key": "name",
+                          "value": "João"
+                        },
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "pagesize",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Usuário",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"name\": \"João da Silva Atualizado\",\n  \"birthDate\": \"1995-06-15\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users/{{usuarioId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Role",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"roleName\": \"User\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users/{{usuarioId}}/role",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}",
+                        "role"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Senha",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"password\": \"Nova!1234\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users/{{usuarioId}}/password",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}",
+                        "password"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Deletar Usuário",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/users/{{usuarioId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             }
           ]
         },
         {
-          "name": "Usuarios",
+          "name": "fcg-catalog-api",
           "item": [
             {
-              "name": "Criar Usuário",
-              "event": [
+              "name": "Games",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var json = pm.response.json();",
-                      "if (json.id) {",
-                      "    pm.collectionVariables.set('usuarioId', json.id);",
-                      "    console.log('usuarioId salvo: ' + json.id);",
-                      "}"
+                  "name": "Criar Jogo",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var json = pm.response.json();",
+                          "if (json.id) {",
+                          "    pm.collectionVariables.set('jogoId', json.id);",
+                          "    console.log('jogoId salvo: ' + json.id);",
+                          "}"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"José da Silva\",\n  \"email\": \"jose.silva@email.com\",\n  \"birthDate\": \"1995-06-15\",\n  \"password\": \"Abc!1234\"\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Buscar Usuário por ID",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{usuarioId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Listar Todos os Usuários",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users?pagina=1&tamanhoPagina=10&ativos=true",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users"
-                  ],
-                  "query": [
-                    {
-                      "key": "pagina",
-                      "value": "1"
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nome\": \"The Witcher 3: Wild Hunt\",\n  \"descricao\": \"Um excelente RPG de mundo aberto ambientado num universo de fantasia sombria.\",\n  \"preco\": 199.90,\n  \"dataLancamento\": \"2015-05-19T00:00:00Z\",\n  \"classificacaoEtaria\": 18\n}"
                     },
-                    {
-                      "key": "tamanhoPagina",
-                      "value": "10"
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Listar Todos os Jogos",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
                     },
-                    {
-                      "key": "ativos",
-                      "value": "true"
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games"
+                      ]
                     }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Buscar Usuários por Nome",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users/busca?name=João&page=1&pagesize=10",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users",
-                    "busca"
-                  ],
-                  "query": [
-                    {
-                      "key": "name",
-                      "value": "João"
+                {
+                  "name": "Buscar Jogo por ID",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
                     },
-                    {
-                      "key": "page",
-                      "value": "1"
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/{{jogoId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Jogo",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
                     },
-                    {
-                      "key": "pagesize",
-                      "value": "10"
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nome\": \"The Witcher 3: Wild Hunt - GOTY\",\n  \"descricao\": \"Edição completa com todas as expansões incluídas.\",\n  \"preco\": 149.90,\n  \"dataLancamento\": \"2015-05-19T00:00:00Z\",\n  \"classificacaoEtaria\": 18\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/{{jogoId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}"
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Alterar Preço",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"novoPreco\": 99.90\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/{{jogoId}}/price",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}",
+                        "price"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Inativar Jogo",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/{{jogoId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             },
             {
-              "name": "Atualizar Usuário",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
+              "name": "Pedidos",
+              "item": [
+                {
+                  "name": "Criar pedido de compra",
+                  "event": [
                     {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var json = pm.response.json();",
+                          "if (json.orderId) {",
+                          "    pm.collectionVariables.set('pedidoId', json.orderId);",
+                          "    console.log('pedido criado: ' + json.orderId);",
+                          "}"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
                     }
-                  ]
-                },
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"name\": \"João da Silva Atualizado\",\n  \"birthDate\": \"1995-06-15\"\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}",
-                  "host": [
-                    "{{Base-URL-User-API}}"
                   ],
-                  "path": [
-                    "users",
-                    "{{usuarioId}}"
-                  ]
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"gameId\": \"{{jogoId}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/orders",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "orders"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             },
             {
-              "name": "Atualizar Role",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+              "name": "Biblioteca",
+              "item": [
+                {
+                  "name": "Listar jogos do usuário autenticado",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/library",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "library"
+                      ]
                     }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"roleName\": \"User\"\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}/role",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{usuarioId}}",
-                    "role"
-                  ]
+                  },
+                  "response": []
                 }
-              },
-              "response": []
-            },
+              ]
+            }
+          ]
+        },
+        {
+          "name": "fcg-payments-api",
+          "item": [
             {
-              "name": "Atualizar Senha",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+              "name": "Pagamentos",
+              "item": [
+                {
+                  "name": "Consulta status de pagamento do pedido",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/payments/{{pedidoId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "payments",
+                        "{{pedidoId}}"
+                      ]
                     }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"password\": \"Nova!1234\"\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}/password",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{usuarioId}}",
-                    "password"
-                  ]
+                  },
+                  "response": []
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "Deletar Usuário",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}",
-                  "host": [
-                    "{{Base-URL-User-API}}"
-                  ],
-                  "path": [
-                    "users",
-                    "{{usuarioId}}"
-                  ]
-                }
-              },
-              "response": []
+              ]
             }
           ]
         }
       ]
     },
     {
-      "name": "fcg-catalog-api",
+      "name": "Direct",
       "item": [
         {
-          "name": "Games",
+          "name": "fcg-users-api",
           "item": [
             {
-              "name": "Criar Jogo",
-              "event": [
+              "name": "Auth",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var json = pm.response.json();",
-                      "if (json.id) {",
-                      "    pm.collectionVariables.set('jogoId', json.id);",
-                      "    console.log('jogoId salvo: ' + json.id);",
-                      "}"
+                  "name": "Auth Maria | ADM",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "// 1. Converte a resposta para JSON\r",
+                          "const responseData = pm.response.json();\r",
+                          "\r",
+                          "// 2. Extrai o token\r",
+                          "const tokenValue = responseData.token;\r",
+                          "\r",
+                          "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
+                          "pm.collectionVariables.set(\"token\", tokenValue);\r",
+                          "\r",
+                          "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"email\": \"maria.silva@email.com\",\r\n  \"password\": \"Abc!1234\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/auth/login",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Auth João | User",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "// 1. Converte a resposta para JSON\r",
+                          "const responseData = pm.response.json();\r",
+                          "\r",
+                          "// 2. Extrai o token\r",
+                          "const tokenValue = responseData.token;\r",
+                          "\r",
+                          "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
+                          "pm.collectionVariables.set(\"token\", tokenValue);\r",
+                          "\r",
+                          "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"email\": \"joao.silva@email.com\",\r\n  \"password\": \"Abc!1234\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/auth/login",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Usuarios",
+              "item": [
+                {
+                  "name": "Criar Usuário",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var json = pm.response.json();",
+                          "if (json.id) {",
+                          "    pm.collectionVariables.set('usuarioId', json.id);",
+                          "    console.log('usuarioId salvo: ' + json.id);",
+                          "}"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"José da Silva\",\n  \"email\": \"jose.silva@email.com\",\n  \"birthDate\": \"1995-06-15\",\n  \"password\": \"Abc!1234\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users"
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"nome\": \"The Witcher 3: Wild Hunt\",\n  \"descricao\": \"Um excelente RPG de mundo aberto ambientado num universo de fantasia sombria.\",\n  \"preco\": 199.90,\n  \"dataLancamento\": \"2015-05-19T00:00:00Z\",\n  \"classificacaoEtaria\": 18\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/games",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "games"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Listar Todos os Jogos",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                {
+                  "name": "Buscar Usuário por ID",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}"
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/games",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "games"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Buscar Jogo por ID",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                {
+                  "name": "Listar Todos os Usuários",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users?pagina=1&tamanhoPagina=10&ativos=true",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users"
+                      ],
+                      "query": [
+                        {
+                          "key": "pagina",
+                          "value": "1"
+                        },
+                        {
+                          "key": "tamanhoPagina",
+                          "value": "10"
+                        },
+                        {
+                          "key": "ativos",
+                          "value": "true"
+                        }
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "games",
-                    "{{jogoId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Atualizar Jogo",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                {
+                  "name": "Buscar Usuários por Nome",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users/busca?name=João&page=1&pagesize=10",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "busca"
+                      ],
+                      "query": [
+                        {
+                          "key": "name",
+                          "value": "João"
+                        },
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "pagesize",
+                          "value": "10"
+                        }
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"nome\": \"The Witcher 3: Wild Hunt - GOTY\",\n  \"descricao\": \"Edição completa com todas as expansões incluídas.\",\n  \"preco\": 149.90,\n  \"dataLancamento\": \"2015-05-19T00:00:00Z\",\n  \"classificacaoEtaria\": 18\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "games",
-                    "{{jogoId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Alterar Preço",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                {
+                  "name": "Atualizar Usuário",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"name\": \"João da Silva Atualizado\",\n  \"birthDate\": \"1995-06-15\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}"
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"novoPreco\": 99.90\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}/price",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "games",
-                    "{{jogoId}}",
-                    "price"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Inativar Jogo",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                {
+                  "name": "Atualizar Role",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"roleName\": \"User\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}/role",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}",
+                        "role"
+                      ]
                     }
-                  ]
+                  },
+                  "response": []
                 },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "games",
-                    "{{jogoId}}"
-                  ]
+                {
+                  "name": "Atualizar Senha",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"{{usuarioId}}\",\n  \"password\": \"Nova!1234\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}/password",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}",
+                        "password"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Deletar Usuário",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-User-API}}/users/{{usuarioId}}",
+                      "host": [
+                        "{{Base-URL-User-API}}"
+                      ],
+                      "path": [
+                        "users",
+                        "{{usuarioId}}"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             }
           ]
         },
         {
-          "name": "Pedidos",
+          "name": "fcg-catalog-api",
           "item": [
             {
-              "name": "Criar pedido de compra",
-              "event": [
+              "name": "Games",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var json = pm.response.json();",
-                      "if (json.orderId) {",
-                      "    pm.collectionVariables.set('pedidoId', json.orderId);",
-                      "    console.log('pedido criado: ' + json.orderId);",
-                      "}"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
+                  "name": "Criar Jogo",
+                  "event": [
                     {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var json = pm.response.json();",
+                          "if (json.id) {",
+                          "    pm.collectionVariables.set('jogoId', json.id);",
+                          "    console.log('jogoId salvo: ' + json.id);",
+                          "}"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
                     }
-                  ]
-                },
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"gameId\": \"{{jogoId}}\"\n}"
-                },
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/orders",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
                   ],
-                  "path": [
-                    "orders"
-                  ]
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nome\": \"The Witcher 3: Wild Hunt\",\n  \"descricao\": \"Um excelente RPG de mundo aberto ambientado num universo de fantasia sombria.\",\n  \"preco\": 199.90,\n  \"dataLancamento\": \"2015-05-19T00:00:00Z\",\n  \"classificacaoEtaria\": 18\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Listar Todos os Jogos",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Buscar Jogo por ID",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Jogo",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nome\": \"The Witcher 3: Wild Hunt - GOTY\",\n  \"descricao\": \"Edição completa com todas as expansões incluídas.\",\n  \"preco\": 149.90,\n  \"dataLancamento\": \"2015-05-19T00:00:00Z\",\n  \"classificacaoEtaria\": 18\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Alterar Preço",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"novoPreco\": 99.90\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}/price",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}",
+                        "price"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Inativar Jogo",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games/{{jogoId}}",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
+            },
+            {
+              "name": "Pedidos",
+              "item": [
+                {
+                  "name": "Criar pedido de compra",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "var json = pm.response.json();",
+                          "if (json.orderId) {",
+                          "    pm.collectionVariables.set('pedidoId', json.orderId);",
+                          "    console.log('pedido criado: ' + json.orderId);",
+                          "}"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"gameId\": \"{{jogoId}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/orders",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "orders"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Biblioteca",
+              "item": [
+                {
+                  "name": "Listar jogos do usuário autenticado",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/library",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "library"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
         {
-          "name": "Biblioteca",
+          "name": "fcg-payments-api",
           "item": [
             {
-              "name": "Listar jogos do usuário autenticado",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+              "name": "Pagamentos",
+              "item": [
+                {
+                  "name": "Consulta status de pagamento do pedido",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{Base-URL-Payments-API}}/payments/{{pedidoId}}",
+                      "host": [
+                        "{{Base-URL-Payments-API}}"
+                      ],
+                      "path": [
+                        "payments",
+                        "{{pedidoId}}"
+                      ]
                     }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{Base-URL-Catalog-API}}/library",
-                  "host": [
-                    "{{Base-URL-Catalog-API}}"
-                  ],
-                  "path": [
-                    "library"
-                  ]
+                  },
+                  "response": []
                 }
-              },
-              "response": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "fcg-payments-api",
-      "item": [
-        {
-          "name": "Pagamentos",
-          "item": [
-            {
-              "name": "Consulta status de pagamento do pedido",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "",
-                    "value": "",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{Base-URL-Payments-API}}/payments/{{pedidoId}}",
-                  "host": [
-                    "{{Base-URL-Payments-API}}"
-                  ],
-                  "path": [
-                    "payments",
-                    "{{pedidoId}}"
-                  ]
-                }
-              },
-              "response": []
+              ]
             }
           ]
         }
