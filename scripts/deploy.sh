@@ -59,6 +59,14 @@ echo "👷 Deploy do FCG Payments Worker..."
 kubectl apply -f microservices/fcg-payments/k8s/worker/
 
 echo ""
+echo "🚪 Deploy do Kong API Gateway..."
+kubectl apply -k k8s/infrastructure/kong/
+
+echo ""
+echo "⏳ Aguardando Kong API Gateway..."
+kubectl rollout status deployment/kong -n "${NAMESPACE}"
+
+echo ""
 echo "📋 Recursos implantados:"
 kubectl get all -n "${NAMESPACE}"
 
