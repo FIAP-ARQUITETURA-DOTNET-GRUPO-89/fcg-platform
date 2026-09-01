@@ -7,44 +7,79 @@ LAYOUT_LEFT_RIGHT()
 
 Person(user, "Usuário", "Utiliza a plataforma")
 
+System_Ext(kong, "Kong API Gateway", "API Gateway. Roteamento, autenticação JWT e rate limiting")
+
 System_Boundary(fcg, "FCG Platform") {
 
-    Container(usersApi, "Users API", ".NET", "Cadastro, autenticação e JWT")
+    Container(usersApi, "Users API", ".NET", "Cadastro, autenticação e gerenciamento de usuários")
 
-    Container(catalogApi, "Catalog API", ".NET", "Catálogo de jogos e compra")
+    Container(catalogApi, "Catalog API", ".NET", "Catálogo de jogos e pedidos")
 
-    Container(catalogWorker, "Catalog Worker", ".NET Worker", "Atualiza biblioteca após pagamento")
+    Container(paymentsApi, "Payments API", ".NET", "Consulta e gerenciamento de pagamentos")
+
+    Container(catalogWorker, "Catalog Worker", ".NET Worker", "Atualiza a biblioteca após pagamento")
 
     Container(paymentsWorker, "Payments Worker", ".NET Worker", "Processa pagamentos")
 
     Container(notificationsWorker, "Notifications Worker", ".NET Worker", "Envia notificações")
-
 }
 
 System_Ext(rabbitmq, "RabbitMQ", "Broker de mensagens")
-System_Ext(postgres, "PostgreSQL", "Persistência")
+
+System_Ext(postgres, "PostgreSQL", "Persistência dos dados")
+
 System_Ext(email, "Serviço de E-mail", "Sistema externo")
 
 
-Rel(user, usersApi, "Cadastro / Login", "HTTPS")
-Rel(user, catalogApi, "Compra de jogos", "HTTPS")
+' ==================================================
+' ENTRADA EXTERNA
+' ==================================================
 
+Rel(user, kong, "Requisições", "HTTPS")
+
+Rel(kong, usersApi, "Users / Auth", "HTTP")
+
+Rel(kong, catalogApi, "Games / Orders / Library", "HTTP")
+
+Rel(kong, paymentsApi, "Payments", "HTTP")
+
+
+' ==================================================
+' EVENTOS
+' ==================================================
 
 Rel(usersApi, rabbitmq, "Publica eventos", "AMQP")
+
 Rel(catalogApi, rabbitmq, "Publica eventos", "AMQP")
 
+Rel(paymentsApi, rabbitmq, "Publica eventos", "AMQP")
+
+Rel(rabbitmq, catalogWorker, "Consome eventos", "AMQP")
 
 Rel(rabbitmq, paymentsWorker, "Consome eventos", "AMQP")
-Rel(rabbitmq, catalogWorker, "Consome eventos", "AMQP")
+
 Rel(rabbitmq, notificationsWorker, "Consome eventos", "AMQP")
 
 
+' ==================================================
+' PERSISTÊNCIA
+' ==================================================
+
 Rel(usersApi, postgres, "Persiste dados", "SQL")
+
 Rel(catalogApi, postgres, "Persiste dados", "SQL")
+
+Rel(paymentsApi, postgres, "Persiste dados", "SQL")
+
 Rel(catalogWorker, postgres, "Atualiza dados", "SQL")
+
 Rel(paymentsWorker, postgres, "Persiste dados", "SQL")
 
 
-Rel(notificationsWorker, email, "Envia notificações")
+' ==================================================
+' NOTIFICAÇÕES
+' ==================================================
+
+Rel(notificationsWorker, email, "Envia notificações", "HTTP/SMTP")
 
 @enduml
