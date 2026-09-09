@@ -5,6 +5,10 @@ set -e
 echo "🧹 Removendo recursos da plataforma..."
 
 echo ""
+echo "🚪 Removendo Kong API Gateway..."
+kubectl delete -k k8s/infrastructure/kong/ --ignore-not-found
+
+echo ""
 echo "💳 Removendo FCG Payments Worker..."
 kubectl delete -f microservices/fcg-payments/k8s/worker/ --ignore-not-found
 

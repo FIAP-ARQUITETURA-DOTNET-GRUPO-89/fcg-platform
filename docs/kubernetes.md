@@ -43,6 +43,7 @@ A documentação de cada componente encontra-se em:
 
 - [PostgreSQL](k8s/infrastructure/postgres.md)
 - [RabbitMQ](k8s/infrastructure/rabbitmq.md)
+- [Kong API Gateway](k8s/infrastructure/kong.md)
 
 ## Microsserviços
 
