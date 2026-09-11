@@ -1,0 +1,40 @@
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: fcg-notifications-function-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fcgnotifications-db
+    ports:
+      # Exposto no host pra rodar "dotnet ef database update" direto da sua máquina.
+      - "5432:5432"
+    networks:
+      - localstack-net
+
+  localstack:
+    container_name: fcg-notifications-function-localstack
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"
+    environment:
+      # Obrigatório desde 2026, mesmo no tier gratuito "Hobby". Ver README.md desta pasta.
+      - LOCALSTACK_AUTH_TOKEN=ls-POsELIcU-nuwI-8317-KOTO-DIGE06499177
+      - DEBUG=0
+      - PERSISTENCE=0
+      # Faz os containers da Lambda que o LocalStack sobe entrarem nessa mesma rede,
+      # pra conseguirem resolver o Postgres pelo nome do serviço ("postgres").
+      - LAMBDA_DOCKER_NETWORK=fcg-notifications-function-localstack-net
+    volumes:
+      - "./volume:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - localstack-net
+
+networks:
+  localstack-net:
+    name: fcg-notifications-function-localstack-net
+    driver: bridge
