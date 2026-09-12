@@ -7,6 +7,9 @@
 [submodule "microservices/fcg-notifications"]
 	path = microservices/fcg-notifications
 	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-notifications.git
+[submodule "microservices/fcg-notifications-function"]
+	path = microservices/fcg-notifications-function
+	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-notifications-function.git
 [submodule "microservices/fcg-payments"]
 	path = microservices/fcg-payments
 	url = https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-payments.git
