@@ -22,6 +22,11 @@
     <!-- FcgNotifications.Infrastructure -->
     <PackageVersion Include="MassTransit.RabbitMQ" Version="[8.5.10]" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
+    <!-- Não é referenciado direto em nenhum .csproj (vem via Npgsql.EntityFrameworkCore.PostgreSQL),
+         mas sem fixar aqui o NuGet resolvia a versão mínima que o Npgsql pede (10.0.4), diferente
+         do resto da família EF Core (10.0.9) - e o EF Core exige que todos os assemblies dele
+         estejam na MESMA versão exata, senão quebra em runtime com FileNotFoundException. -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.9" />

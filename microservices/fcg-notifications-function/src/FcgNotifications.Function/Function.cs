@@ -21,6 +21,10 @@ public class Function
     // entre invocações que caem no mesmo container, evitando reconstruir o DI a cada mensagem.
     private static readonly IServiceProvider ServiceProvider = BuildServiceProvider();
 
+    // PropertyNameCaseInsensitive porque o corpo real da mensagem (dentro do envelope do
+    // MassTransit, ver UnwrapMassTransitEnvelope abaixo) vem em camelCase.
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
     private static IServiceProvider BuildServiceProvider()
     {
         var configuration = new ConfigurationBuilder()
@@ -54,7 +58,15 @@ public class Function
             foreach (var message in messages)
             {
                 // message.Data vem como string em base64; precisa decodificar antes de virar texto.
-                var json = Encoding.UTF8.GetString(Convert.FromBase64String(message.Data));
+                var rawBody = Encoding.UTF8.GetString(Convert.FromBase64String(message.Data));
+
+                // O Users-API/Payments-API publicam pelo MassTransit (publishEndpoint.Publish),
+                // que não manda o objeto puro pra fila - ele embrulha num envelope próprio
+                // ({ "messageId": ..., "messageType": [...], "message": { ... o evento de
+                // verdade, em camelCase ... } }). O Amazon MQ entrega essa mensagem crua pro
+                // Lambda (sem o MassTransit por perto pra desembrulhar), então precisamos fazer
+                // isso na mão aqui - senão os campos do evento chegam todos nulos/vazios.
+                var json = UnwrapMassTransitEnvelope(rawBody);
 
                 switch (queueName)
                 {
@@ -74,9 +86,27 @@ public class Function
         }
     }
 
+    /// <summary>
+    /// Extrai o conteúdo de verdade de dentro do envelope do MassTransit (campo "message"),
+    /// se a mensagem vier embrulhada assim. Se não vier (ex.: uma invocação manual de teste
+    /// com o payload já "cru", como em ../localstack/events/*.json), usa o corpo como está.
+    /// </summary>
+    private static string UnwrapMassTransitEnvelope(string rawBody)
+    {
+        using var document = JsonDocument.Parse(rawBody);
+
+        if (document.RootElement.ValueKind == JsonValueKind.Object &&
+            document.RootElement.TryGetProperty("message", out var messageElement))
+        {
+            return messageElement.GetRawText();
+        }
+
+        return rawBody;
+    }
+
     private static async Task HandlePaymentProcessedAsync(IMediator mediator, string json, ILambdaContext context)
     {
-        var paymentEvent = JsonSerializer.Deserialize<PaymentProcessedEvent>(json)
+        var paymentEvent = JsonSerializer.Deserialize<PaymentProcessedEvent>(json, JsonOptions)
             ?? throw new InvalidOperationException("Payload de PaymentProcessedEvent inválido ou vazio.");
 
         context.Logger.LogInformation(
@@ -93,7 +123,7 @@ public class Function
 
     private static async Task HandleUserCreatedAsync(IMediator mediator, string json, ILambdaContext context)
     {
-        var userEvent = JsonSerializer.Deserialize<UserCreatedEvent>(json)
+        var userEvent = JsonSerializer.Deserialize<UserCreatedEvent>(json, JsonOptions)
             ?? throw new InvalidOperationException("Payload de UserCreatedEvent inválido ou vazio.");
 
         context.Logger.LogInformation($"Processando UserCreatedEvent para UserId: {userEvent.UserId}");

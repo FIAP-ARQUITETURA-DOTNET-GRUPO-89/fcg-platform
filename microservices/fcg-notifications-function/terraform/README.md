@@ -3,6 +3,10 @@
 Terraform que provisiona:
 
 - Um broker **Amazon MQ for RabbitMQ** (`aws_mq_broker`), na VPC default, sem acesso público.
+- Um banco **Postgres (Amazon RDS)** (`aws_db_instance`), com endpoint público (ver
+  `postgres_publicly_accessible` em `variables.tf` pro trade-off) - simplifica o Lambda
+  não precisar rodar dentro de uma VPC (que exigiria um NAT Gateway pra continuar
+  alcançando o resto da AWS) e deixa você rodar as migrations do seu computador.
 - A função **Lambda** `FcgNotifications.Function` (`aws_lambda_function`), usando a `LabRole` já existente na conta (AWS Academy Learner Lab não permite criar IAM roles novas).
 - Dois **event source mappings** (`aws_lambda_event_source_mapping`), um para cada fila (`notifications-payment-processed-events` e `notifications-user-created-events`), que fazem o Lambda ser acionado nativamente pelas mensagens do RabbitMQ.
 - Um **Secrets Manager secret** com as credenciais do broker, usado pelo `BASIC_AUTH` do event source mapping.
@@ -11,7 +15,7 @@ Terraform que provisiona:
 
 1. Terraform >= 1.7 instalado.
 2. Credenciais AWS válidas exportadas no terminal (no AWS Academy Learner Lab: painel do lab → **AWS Details** → copiar `aws_access_key_id`, `aws_secret_access_key` e `aws_session_token` para variáveis de ambiente, ou colar no `~/.aws/credentials`). As credenciais do Learner Lab expiram em poucas horas - se o `terraform apply` começar a falhar com erro de autenticação, é isso.
-3. Confirme que dá pra criar um broker Amazon MQ na sua conta (Console → Amazon MQ → Create broker → engine RabbitMQ). Se der erro de permissão, esse Terraform não vai funcionar como está - ver alternativa no fim deste README.
+3. Confirme que dá pra criar um broker Amazon MQ e uma instância RDS na sua conta (Console → Amazon MQ → Create broker → engine RabbitMQ; Console → RDS → Create database → engine PostgreSQL). Se der erro de permissão em algum dos dois, esse Terraform não vai funcionar como está - ver alternativa no fim deste README.
 4. `dotnet tool install -g Amazon.Lambda.Tools` (se ainda não tiver).
 
 ## Passo a passo
@@ -34,7 +38,7 @@ cp terraform.tfvars.example terraform.tfvars
 
 Edite o `terraform.tfvars` com:
 - `rabbitmq_admin_password`: uma senha forte (12-250 caracteres, ≥4 caracteres únicos, sem vírgula).
-- `db_connection_string`: a connection string do Postgres que a função vai usar.
+- `postgres_master_password`: uma senha forte (8-128 caracteres) pro RDS.
 - Confirme `existing_iam_role_name` (padrão `"LabRole"`) - se sua conta permitir criar roles IAM normalmente, me avise que eu ajusto o `data.tf`/`lambda.tf` pra criar uma role dedicada em vez de reusar essa.
 
 ### 3. Provisionar
@@ -45,9 +49,27 @@ terraform plan
 terraform apply
 ```
 
-O `aws_mq_broker` demora entre 15 e 30 minutos para ficar `RUNNING` na primeira criação - é normal o `apply` ficar parado nesse recurso.
+O `aws_mq_broker` demora entre 15 e 30 minutos para ficar `RUNNING` na primeira criação - é normal o `apply` ficar parado nesse recurso (o RDS costuma ficar pronto bem mais rápido, uns 5-10 minutos).
 
-### 4. Criar as filas no RabbitMQ
+### 4. Rodar as migrations no RDS
+
+A função não roda migrations sozinha (isso é feito pelo `dotnet ef database update`, uma ferramenta de desenvolvimento, não algo pra rodar dentro do Lambda). Faça isso uma vez do seu computador, depois que o `apply` terminar:
+
+```bash
+terraform output postgres_endpoint
+terraform output -raw postgres_connection_string
+```
+
+Com a connection string em mãos:
+
+```bash
+cd ../src/FcgNotifications.Infrastructure
+ConnectionStrings__Default="<cole a connection string aqui>" dotnet ef database update
+```
+
+(no PowerShell: `$env:ConnectionStrings__Default = "<connection string>"` antes do `dotnet ef database update`). Isso cria o banco `fcgnotifications-db` no RDS (se ainda não existir) e aplica as migrations.
+
+### 5. Criar as filas no RabbitMQ
 
 O provider `aws` não tem um recurso para criar filas dentro de um broker RabbitMQ (isso é gerenciado pelo próprio RabbitMQ via AMQP/Management API, não pela API da AWS). Depois do `apply`:
 
@@ -57,7 +79,7 @@ O provider `aws` não tem um recurso para criar filas dentro de um broker Rabbit
 
 Alternativa: se os serviços publishers (payments/users) já usam MassTransit com `ConfigureEndpoints`, as filas costumam ser criadas automaticamente na primeira publicação/consumo - nesse caso este passo manual pode não ser necessário, mas vale conferir no console se os nomes batem com o que o `Function.cs` espera.
 
-### 5. Conferir se o Lambda foi realmente acionado
+### 6. Conferir se o Lambda foi realmente acionado
 
 ```bash
 terraform output event_source_mapping_payment_processed_state
@@ -76,4 +98,4 @@ Isso foi construído assumindo AWS Academy Learner Lab com a `LabRole` fixa e Am
 terraform destroy
 ```
 
-Lembre de rodar isso quando terminar de testar, para não deixar o broker Amazon MQ (que cobra por hora, mesmo no `mq.t3.micro`) consumindo o crédito do Learner Lab sem necessidade.
+Lembre de rodar isso quando terminar de testar, para não deixar o broker Amazon MQ e o RDS (ambos cobram por hora, mesmo nas classes `.t3.micro`) consumindo o crédito do Learner Lab sem necessidade.

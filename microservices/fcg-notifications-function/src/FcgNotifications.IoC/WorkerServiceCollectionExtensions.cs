@@ -13,6 +13,12 @@ public static class WorkerServiceCollectionExtensions
 {
     public static void ConfigureWorkerDependencies(this IServiceCollection services, IConfiguration configuration)
     {
+        // Necessário aqui porque quem chama isso (FcgNotifications.Function) monta o
+        // ServiceProvider na mão, sem um Host genérico por trás - sem isso o MediatR
+        // quebra ao tentar resolver ILoggerFactory ("MediatR requires ILoggerFactory
+        // to be registered. Call services.AddLogging() before services.AddMediatR().").
+        services.AddLogging();
+
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
             typeof(IDomainEntryPoint).Assembly,
             typeof(IApplicationAssembly).Assembly));

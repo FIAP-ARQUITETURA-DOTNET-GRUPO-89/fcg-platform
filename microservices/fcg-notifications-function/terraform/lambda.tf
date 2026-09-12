@@ -13,7 +13,7 @@ resource "aws_lambda_function" "notifications_function" {
 
   environment {
     variables = {
-      ConnectionStrings__Default = var.db_connection_string
+      ConnectionStrings__Default = "Host=${aws_db_instance.postgres.address};Port=${aws_db_instance.postgres.port};Database=${var.postgres_app_database_name};Username=${var.postgres_master_username};Password=${var.postgres_master_password}"
     }
   }
 

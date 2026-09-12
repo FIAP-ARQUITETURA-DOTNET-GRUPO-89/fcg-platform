@@ -160,8 +160,71 @@ variable "lambda_batch_size" {
   default     = 1
 }
 
-variable "db_connection_string" {
-  description = "Connection string do Postgres (ConnectionStrings__Default), injetada como variável de ambiente do Lambda."
+# ---------------------------------------------------------------------------
+# Postgres (Amazon RDS)
+# ---------------------------------------------------------------------------
+
+variable "postgres_engine_version" {
+  description = "Versão (major, ex.: \"17\") do PostgreSQL no RDS. Confirme a disponível na sua região com `aws rds describe-db-engine-versions --engine postgres --query \"DBEngineVersions[].EngineVersion\"`."
+  type        = string
+  default     = "17"
+}
+
+variable "postgres_instance_class" {
+  description = "Classe de instância do RDS. db.t3.micro é a menor/mais barata, adequada para o Learner Lab."
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "postgres_allocated_storage" {
+  description = "Armazenamento (GB) do RDS."
+  type        = number
+  default     = 20
+}
+
+variable "postgres_master_username" {
+  description = "Usuário master do RDS."
+  type        = string
+  default     = "fcgadmin"
+}
+
+variable "postgres_master_password" {
+  description = "Senha do usuário master do RDS (8-128 caracteres). Defina via terraform.tfvars (não versionado) ou variável de ambiente TF_VAR_postgres_master_password."
   type        = string
   sensitive   = true
+}
+
+variable "postgres_app_database_name" {
+  description = <<-EOT
+    Nome do banco que a function usa (ConnectionStrings__Default). Não é criado pelo
+    Terraform/RDS diretamente (o nome tem hífen, que o parâmetro db_name do RDS não
+    aceita) - é criado sozinho na primeira vez que rodar `dotnet ef database update`
+    contra o endpoint do RDS (o Npgsql/EF Core cria o banco se ele não existir).
+  EOT
+  type    = string
+  default = "fcgnotifications-db"
+}
+
+variable "postgres_publicly_accessible" {
+  description = <<-EOT
+    Se o RDS deve ter endpoint público. true simplifica o setup no Learner Lab (o Lambda
+    não precisa de vpc_config pra alcançar o banco, e você consegue rodar as migrations
+    do seu computador) às custas de expor a porta 5432 na internet - mitigado por uma
+    senha forte e, idealmente, por postgres_additional_ingress_cidr_blocks. false exigiria
+    colocar o Lambda dentro da VPC (vpc_config) e normalmente um NAT Gateway pra ele
+    continuar alcançando outros serviços da AWS fora da VPC - mais complexo pro Learner Lab.
+  EOT
+  type    = bool
+  default = true
+}
+
+variable "postgres_additional_ingress_cidr_blocks" {
+  description = <<-EOT
+    CIDRs liberados na porta 5432 do RDS (ex.: ["SEU_IP/32"]). Se vazio E
+    postgres_publicly_accessible = true, libera de qualquer lugar (0.0.0.0/0) - o Lambda
+    (fora da VPC, sem vpc_config) usa IPs públicos dinâmicos da AWS, então não dá pra
+    restringir só a ele. Preencha com o seu IP se quiser reduzir a exposição mesmo assim.
+  EOT
+  type    = list(string)
+  default = []
 }
