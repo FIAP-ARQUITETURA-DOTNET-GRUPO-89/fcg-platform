@@ -1,0 +1,25 @@
+# DEV-ONLY — NÃO APLICAR EM PRODUÇÃO. Ver dev/README.md.
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: fcg-users-api-local
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["host.docker.internal:7010"]
+            labels:
+              service: fcg-users-api
+              source: docker-compose
+      - job_name: fcg-catalog-api-local
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["host.docker.internal:7030"]
+            labels:
+              service: fcg-catalog-api
+              source: docker-compose
+      - job_name: fcg-payments-api-local
+        metrics_path: /metrics
+        static_configs:
+          - targets: ["host.docker.internal:7040"]
+            labels:
+              service: fcg-payments-api
+              source: docker-compose

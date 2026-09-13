@@ -1,0 +1,55 @@
+fullnameOverride: kube-prom
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+
+    retention: 6h
+    resources:
+      requests:
+        cpu: 100m
+        memory: 400Mi
+      limits:
+        memory: 1Gi
+
+alertmanager:
+  enabled: false
+
+grafana:
+  # Placeholder — sobrescrever em qualquer ambiente compartilhado via
+  # --set grafana.adminPassword=... ou grafana.admin.existingSecret.
+  adminPassword: CHANGE_ME_BEFORE_PROD
+  defaultDashboardsTimezone: browser
+  service:
+    type: ClusterIP
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      searchNamespace: ALL
+    datasources:
+      enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+nodeExporter:
+  enabled: true
+kubeStateMetrics:
+  enabled: true
+
+# Desabilitados por não serem acessíveis em clusters gerenciados
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
