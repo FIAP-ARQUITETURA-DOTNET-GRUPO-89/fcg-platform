@@ -1,9 +1,8 @@
 services:
 
+  ####################################################  
+  # POSTGRES  
   ####################################################
-  # POSTGRES
-  ####################################################
-
   postgres:
     image: postgres:17
     container_name: fcg-postgres
@@ -25,9 +24,22 @@ services:
       - fcg-network
 
   ####################################################
-  # RABBITMQ
+  # MONGODB
   ####################################################
+  mongodb:
+    image: mongo:latest
+    container_name: fcg-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - fcg-network
 
+  ####################################################
+  # RABBITMQ  
+  ####################################################
   rabbitmq:
     image: rabbitmq:3-management
     container_name: fcg-rabbitmq
@@ -47,9 +59,8 @@ services:
       - fcg-network
 
   ####################################################
-  # USERS API
+  # USERS API  
   ####################################################
-
   users-api:
     container_name: fcg-users-api
     build:
@@ -81,9 +92,8 @@ services:
       - fcg-network
 
   ####################################################
-  # CATALOG API
+  # CATALOG API  
   ####################################################
-
   catalog-api:
     container_name: fcg-catalog-api
     build:
@@ -101,6 +111,7 @@ services:
 
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+      ConnectionStrings__Mongo: mongodb://mongodb:27017
 
     ports:
       - "7030:7030"
@@ -110,6 +121,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      mongodb:
+        condition: service_started
 
     networks:
       - fcg-network
@@ -117,7 +130,6 @@ services:
   ####################################################
   # CATALOG WORKER
   ####################################################
-
   catalog-worker:
     container_name: fcg-catalog-worker
     build:
@@ -133,12 +145,15 @@ services:
 
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+      ConnectionStrings__Mongo: mongodb://mongodb:27017
 
     depends_on:
       postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      mongodb:
+        condition: service_started
       catalog-api:
         condition: service_started
 
@@ -148,7 +163,6 @@ services:
   ####################################################
   # PAYMENTS API
   ####################################################
-
   payments-api:
     container_name: fcg-payments-api
     build:
@@ -182,7 +196,6 @@ services:
   ####################################################
   # PAYMENTS WORKER
   ####################################################
-
   payments-worker:
     container_name: fcg-payments-worker
     build:
@@ -213,7 +226,6 @@ services:
   ####################################################
   # NOTIFICATIONS WORKER
   ####################################################
-
   notifications-worker:
     container_name: fcg-notifications-worker
     build:
@@ -242,7 +254,6 @@ services:
   ####################################################
   # KONG API GATEWAY
   ####################################################
-
   kong:
     image: kong:3.9.3
     container_name: fcg-kong
@@ -272,6 +283,7 @@ services:
 
 volumes:
   postgres-data:
+  mongodb-data:
 
 networks:
   fcg-network:

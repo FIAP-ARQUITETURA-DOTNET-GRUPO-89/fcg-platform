@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: ""
+
+localResources:
+  collections:
+    - ../fcg-platform.postman_collection.json
+  environments:
+    - ../aspire.postman_environment.json
+    - ../docker-compose.postman_environment.json
+    - ../k8s.postman_environment.json
