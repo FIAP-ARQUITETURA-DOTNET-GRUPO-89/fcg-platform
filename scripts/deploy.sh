@@ -27,12 +27,21 @@ kubectl apply -f k8s/infrastructure/rabbitmq/deployment.yaml
 kubectl apply -f k8s/infrastructure/rabbitmq/service.yaml
 
 echo ""
+echo "🔴 Deploy do Redis..."
+kubectl apply -f k8s/infrastructure/redis/deployment.yaml
+kubectl apply -f k8s/infrastructure/redis/service.yaml
+
+echo ""
 echo "⏳ Aguardando PostgreSQL..."
 kubectl rollout status deployment/postgres -n "${NAMESPACE}"
 
 echo ""
 echo "⏳ Aguardando RabbitMQ..."
 kubectl rollout status deployment/rabbitmq -n "${NAMESPACE}"
+
+echo ""
+echo "⏳ Aguardando Redis..."
+kubectl rollout status deployment/fcg-redis -n "${NAMESPACE}"
 
 echo ""
 echo "👤 Deploy do FCG Users API..."

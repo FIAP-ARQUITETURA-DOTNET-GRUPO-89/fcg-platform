@@ -43,6 +43,7 @@ A documentação de cada componente encontra-se em:
 
 - [PostgreSQL](k8s/infrastructure/postgres.md)
 - [RabbitMQ](k8s/infrastructure/rabbitmq.md)
+- [Redis](k8s/infrastructure/redis.md)
 
 ## Microsserviços
 
@@ -56,15 +57,10 @@ Após a infraestrutura estar disponível, realize o deploy dos microsserviços n
 A documentação de cada componente encontra-se em:
 
 - 👤 [FCG Users API](k8s/services/fcg-users-api.md)
-
 - 🔔 [FCG Notifications Worker](k8s/services/fcg-notifications-worker.md)
-
 - 🎮 [FCG Catalog API](k8s/services/fcg-catalog-api.md)
-
 - 🎮 [FCG Catalog Worker](k8s/services/fcg-catalog-worker.md)
-
 - 💳 [FCG Payments API](k8s/services/fcg-payments-api.md)
-
 - 💳 [FCG Payments Worker](k8s/services/fcg-payments-worker.md)
 
 # 🛠 Scripts úteis
@@ -79,7 +75,7 @@ No Windows, abra o **Git Bash** na raiz do repositório e execute os comandos ab
 ./scripts/deploy.sh
 ```
 
-Responsável por realizar o deploy da infraestrutura compartilhada e dos microsserviços da plataforma no Kubernetes.
+Responsável por realizar o deploy da infraestrutura compartilhada, incluindo PostgreSQL, RabbitMQ e Redis, e dos microsserviços da plataforma no Kubernetes.
 
 ## 🧹 Cleanup do cluster
 
@@ -87,7 +83,7 @@ Responsável por realizar o deploy da infraestrutura compartilhada e dos micross
 ./scripts/cleanup.sh
 ```
 
-Remove todos os recursos da plataforma implantados no cluster Kubernetes.
+Remove todos os recursos da plataforma implantados no cluster Kubernetes, incluindo a infraestrutura compartilhada.
 
 # 🛠 Comandos Úteis
 
