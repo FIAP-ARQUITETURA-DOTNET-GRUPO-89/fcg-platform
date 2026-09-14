@@ -27,12 +27,22 @@ kubectl apply -f k8s/infrastructure/rabbitmq/deployment.yaml
 kubectl apply -f k8s/infrastructure/rabbitmq/service.yaml
 
 echo ""
+echo "🍃 Deploy do MongoDB..."
+kubectl apply -f k8s/infrastructure/mongodb/pvc.yaml
+kubectl apply -f k8s/infrastructure/mongodb/deployment.yaml
+kubectl apply -f k8s/infrastructure/mongodb/service.yaml
+
+echo ""
 echo "⏳ Aguardando PostgreSQL..."
 kubectl rollout status deployment/postgres -n "${NAMESPACE}"
 
 echo ""
 echo "⏳ Aguardando RabbitMQ..."
 kubectl rollout status deployment/rabbitmq -n "${NAMESPACE}"
+
+echo ""
+echo "⏳ Aguardando MongoDB..."
+kubectl rollout status deployment/mongodb -n "${NAMESPACE}"
 
 echo ""
 echo "👤 Deploy do FCG Users API..."
