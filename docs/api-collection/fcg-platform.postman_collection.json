@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "510dcd20-75ae-4852-b067-ab077ab86cdf",
+    "_postman_id": "d387a0bb-69a0-439a-ae79-bb32cccf0da2",
     "name": "fcg-platform",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "16325510",
-    "_collection_link": "https://go.postman.co/collection/16325510-510dcd20-75ae-4852-b067-ab077ab86cdf?source=collection_link"
+    "_exporter_id": "56635121",
+    "_collection_link": "https://go.postman.co/collection/56635121-d387a0bb-69a0-439a-ae79-bb32cccf0da2?source=collection_link"
   },
   "item": [
     {
@@ -726,6 +726,145 @@
                       ],
                       "path": [
                         "library"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Reviews",
+              "item": [
+                {
+                  "name": "Criar Review",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"nota\": 3,\r\n  \"comentario\": \"Excelente jogo!\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/{{jogoId}}/reviews",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}",
+                        "reviews"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Listar Reviews",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/{{jogoId}}/reviews",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "{{jogoId}}",
+                        "reviews"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Review",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"nota\": 4,\r\n  \"comentario\": \"Muito bom!\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/reviews/{{reviewId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "reviews",
+                        "{{reviewId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Deletar Review",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/reviews/{{reviewId}}",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "reviews",
+                        "{{reviewId}}"
                       ]
                     }
                   },
@@ -1500,6 +1639,149 @@
                       ],
                       "path": [
                         "library"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Reviews",
+              "item": [
+                {
+                  "name": "Criar Review",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"nota\": 5,\r\n  \"comentario\": \"Excelente jogo!\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/api/games/{{jogoid}}/reviews",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "api",
+                        "games",
+                        "{{jogoid}}",
+                        "reviews"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Listar Reviews",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/api/games/{{jogoid}}/reviews",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "api",
+                        "games",
+                        "{{jogoid}}",
+                        "reviews"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar Review",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"nota\": 4,\r\n  \"comentario\": \"Muito bom!\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/api/games/reviews/{{reviewid}}",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "api",
+                        "games",
+                        "reviews",
+                        "{{reviewid}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Deletar Review",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/api/games/reviews/{{reviewid}}",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "api",
+                        "games",
+                        "reviews",
+                        "{{reviewid}}"
                       ]
                     }
                   },
