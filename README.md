@@ -14,23 +14,17 @@ Repositório responsável pela orquestração da plataforma FCG, contendo config
 
 Este repositório utiliza **Git Submodules** para referenciar os repositórios dos microsserviços.
 
-### Opção 1 (Recomendada)
-
 Clone o repositório juntamente com todos os submódulos:
 
 ```bash
 git clone --recurse-submodules https://github.com/FIAP-ARQUITETURA-DOTNET-GRUPO-89/fcg-platform.git
 ```
 
-### Opção 2
-
-Caso o repositório já tenha sido clonado sem os submódulos, inicialize-os executando:
+Sempre que houver atualização da referência dos submódulos, execute:
 
 ```bash
 git submodule update --init --recursive
 ```
-
-Sempre que houver atualização da referência dos submódulos, execute novamente o comando acima para sincronizar todos os microsserviços com as versões utilizadas pela plataforma.
 
 ## 🚀 Começando
 
@@ -46,12 +40,12 @@ A FCG Platform utiliza uma arquitetura baseada em microsserviços, comunicação
 
 ## 🐳 Executar com Docker
 
-Se você deseja executar a FCG Platform localmente utilizando Docker Compose:
+Para executar a FCG Platform localmente utilizando Docker Compose:
 
-👉 [Documentação do Docker](docs/docker-compose.md)
+👉 [Documentação do Docker Compose](docs/docker-compose.md)
 
 ## ☸️ Executar com Kubernetes
 
-Se você deseja executar a FCG Platform em um cluster Kubernetes:
+Para executar a FCG Platform em um cluster Kubernetes:
 
 👉 [Guia de Kubernetes](docs/kubernetes.md)

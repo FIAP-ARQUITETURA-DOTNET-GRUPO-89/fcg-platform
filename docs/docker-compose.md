@@ -19,6 +19,7 @@ A plataforma é composta pelos seguintes serviços:
 | PostgreSQL | Database | 5432 |
 | RabbitMQ | Broker | 5672 |
 | RabbitMQ Management | Dashboard | 15672 |
+| Redis | Cache | 6379 |
 
 > **Observação:** Atualmente apenas o microserviço **Users** não possui Worker.
 
@@ -110,6 +111,43 @@ docker compose up -d
 
 ---
 
+## Redis
+
+O Redis é utilizado pelo **FCG Catalog** como cache distribuído, reduzindo consultas repetidas ao banco de dados e melhorando o desempenho das consultas do catálogo.
+
+| Configuração | Valor |
+|--------------|-------|
+| Host | localhost |
+| Porta | 6379 |
+| Serviço Docker | redis |
+| Rede | fcg-network |
+
+O Redis utiliza a imagem:
+
+```text
+redis:7-alpine
+```
+
+O serviço possui persistência por meio do volume:
+
+```text
+redis-data
+```
+
+Para verificar se o Redis está respondendo:
+
+```bash
+docker exec fcg-redis redis-cli ping
+```
+
+Resultado esperado:
+
+```text
+PONG
+```
+
+---
+
 # APIs
 
 | Serviço | URL |
@@ -163,6 +201,13 @@ environment:
   ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
 
   ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+```
+
+Para o FCG Catalog, a conexão com o Redis utiliza:
+
+```yaml
+environment:
+  ConnectionStrings__redis: redis:6379
 ```
 
 ---
@@ -277,7 +322,8 @@ docker compose up -d
 # Observações
 
 - Todos os serviços executam na rede Docker `fcg-network`.
-- PostgreSQL e RabbitMQ são compartilhados entre todos os microserviços.
+- PostgreSQL, RabbitMQ e Redis são compartilhados entre os microserviços.
 - Os Workers consomem eventos publicados pelas APIs utilizando RabbitMQ.
-- As configurações de banco de dados e mensageria são injetadas via variáveis de ambiente.
+- O FCG Catalog utiliza o Redis como cache distribuído.
+- As configurações de banco de dados, mensageria e cache são injetadas via variáveis de ambiente.
 - Recomenda-se utilizar versões específicas das imagens (`1.0.0`, `1.0.1`, etc.) em ambientes de produção para garantir previsibilidade nos deployments.

@@ -24,6 +24,26 @@ services:
       - fcg-network
 
   ####################################################
+  # REDIS
+  ####################################################
+
+  redis:
+    image: redis:7-alpine
+    container_name: fcg-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - fcg-network
+
+  ####################################################
   # MONGODB
   ####################################################
   mongodb:
@@ -111,6 +131,7 @@ services:
 
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+      ConnectionStrings__redis: redis:6379
       ConnectionStrings__Mongo: mongodb://mongodb:27017
 
     ports:
@@ -120,6 +141,8 @@ services:
       postgres:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+      redis:
         condition: service_healthy
       mongodb:
         condition: service_started
@@ -223,33 +246,6 @@ services:
     networks:
       - fcg-network
 
-  ####################################################
-  # NOTIFICATIONS WORKER
-  ####################################################
-  notifications-worker:
-    container_name: fcg-notifications-worker
-    build:
-      context: ./microservices/fcg-notifications
-      dockerfile: src/FcgNotifications.Worker/Dockerfile
-    restart: unless-stopped
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      RUN_MIGRATION: "true"
-      JwtSettings__Issuer: FcgUsers-Issuer
-      JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
-      JwtSettings__ExpirationHours: "2"
-
-      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgnotifications-db;Username=postgres;Password=postgres
-      ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
-
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-
-    networks:
-      - fcg-network
 
   ####################################################
   # KONG API GATEWAY
@@ -283,6 +279,7 @@ services:
 
 volumes:
   postgres-data:
+  redis-data:
   mongodb-data:
 
 networks:
