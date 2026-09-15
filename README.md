@@ -53,7 +53,12 @@ Para executar a FCG Platform em um cluster Kubernetes:
 
 ## 📈 Observabilidade
 
-A plataforma adota uma **stack de código aberto baseada em Prometheus + Grafana**, implantada no cluster Kubernetes via Helm e manifestos versionados neste repositório.
+A plataforma adota uma **stack de código aberto baseada em Prometheus + Grafana**, disponível em dois formatos:
+
+- **Docker Compose** — serviços `prometheus` e `grafana` inclusos em `docker-compose.yml` e `docker-compose-development.yml`. Basta `docker compose up` e acessar `http://localhost:3000` (admin / admin).
+- **Kubernetes** — implantação via Helm (`kube-prometheus-stack`) com manifestos versionados em `k8s/infrastructure/observability/`.
+
+Ambos consomem o mesmo dashboard **"FCG — Visão geral"** e as mesmas métricas expostas pelos microsserviços.
 
 ### Justificativa da escolha
 

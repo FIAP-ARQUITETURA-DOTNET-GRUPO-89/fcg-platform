@@ -1,12 +1,14 @@
-# Observabilidade — Prometheus + Grafana
+# Observabilidade — Prometheus + Grafana (Kubernetes)
 
-Stack de observabilidade da FCG Platform.
+Stack de observabilidade da FCG Platform para o cluster Kubernetes.
 
 - **Prometheus** coleta métricas dos microsserviços via `ServiceMonitor` no formato Prometheus.
 - **Grafana** exibe dashboards em tempo real (latência, request rate, error rate).
 - **kube-state-metrics** e **node-exporter** cobrem métricas de infraestrutura K8s.
 
 Alertmanager está desabilitado por não ser exigido pelo desafio.
+
+> Para desenvolvimento local via `docker-compose`, os serviços `prometheus` e `grafana` já estão inclusos em `docker-compose.yml` e `docker-compose-development.yml` — basta `docker compose up` e acessar `http://localhost:3000` (admin / admin). Os arquivos de configuração ficam em `docker/infrastructure/prometheus/` e `docker/infrastructure/grafana/`.
 
 ## Pré-requisitos
 
@@ -35,20 +37,6 @@ helm upgrade --install kube-prom prometheus-community/kube-prometheus-stack \
   --set grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD" \
   --wait
 ```
-
-### Desenvolvimento local (docker-compose)
-
-Se os microsserviços ainda não estão implantados no cluster e você quer validar a stack contra os containers do `docker-compose`, adicione o overlay de dev:
-
-```bash
-helm upgrade --install kube-prom prometheus-community/kube-prometheus-stack \
-  --namespace observability \
-  -f k8s/infrastructure/observability/values-kube-prometheus-stack.yaml \
-  -f k8s/infrastructure/observability/dev/values-local-docker-compose.yaml \
-  --set grafana.adminPassword="admin"
-```
-
-⚠️ O overlay `dev/` **nunca** deve ser aplicado em produção — ver [`dev/README.md`](dev/README.md).
 
 ## Acesso
 
@@ -167,7 +155,7 @@ Depois pode reexecutar o `helm upgrade` normalmente.
 Sintoma: `Prometheus → Status → Targets` não lista `fcg-services`, ou lista com "0 / 0 up".
 
 Causas comuns:
-1. Microsserviços ainda não foram implantados no namespace `fcg-platform` (rodam só em docker-compose). Solução temporária: usar o overlay `values-local-docker-compose.yaml` (scrape via `host.docker.internal`).
+1. Microsserviços ainda não foram implantados no namespace `fcg-platform`. Para validar localmente sem K8s, use o `docker-compose` (já traz Prometheus e Grafana integrados).
 2. Service do microsserviço não tem as labels exigidas (`app.kubernetes.io/part-of: fcg-platform` + `component: api`).
 3. Porta do Service não está nomeada `http`.
 

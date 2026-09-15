@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: fcg-users-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["users-api:7010"]
+        labels:
+          service: fcg-users-api
+
+  - job_name: fcg-catalog-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["catalog-api:7030"]
+        labels:
+          service: fcg-catalog-api
+
+  - job_name: fcg-payments-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["payments-api:7040"]
+        labels:
+          service: fcg-payments-api
