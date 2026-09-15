@@ -33,6 +33,10 @@ echo "👤 Removendo FCG Users API..."
 kubectl delete -f microservices/fcg-users/k8s/api/ --ignore-not-found
 
 echo ""
+echo "🔴 Removendo Redis..."
+kubectl delete -f k8s/infrastructure/redis/ --ignore-not-found
+
+echo ""
 echo "🍃 Removendo MongoDB..."
 kubectl delete -f k8s/infrastructure/mongodb/ --ignore-not-found
 

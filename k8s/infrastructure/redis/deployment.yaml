@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: fcg-redis
+  namespace: fcg-platform
+
+  labels:
+    app.kubernetes.io/name: fcg-redis
+    app.kubernetes.io/instance: fcg-redis
+    app.kubernetes.io/component: cache
+    app.kubernetes.io/part-of: fcg-platform
+    app.kubernetes.io/managed-by: kubectl
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fcg-redis
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fcg-redis
+        app.kubernetes.io/instance: fcg-redis
+        app.kubernetes.io/component: cache
+        app.kubernetes.io/part-of: fcg-platform
+
+    spec:
+      containers:
+        - name: fcg-redis
+          image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 6379
+
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
