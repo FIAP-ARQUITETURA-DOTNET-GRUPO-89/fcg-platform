@@ -53,30 +53,7 @@ Para executar a FCG Platform em um cluster Kubernetes:
 
 ## 📈 Observabilidade
 
-A plataforma adota uma **stack de código aberto baseada em Prometheus + Grafana**, disponível em dois formatos:
+A plataforma adota uma **stack de código aberto baseada em Prometheus + Grafana**, disponível tanto no `docker-compose` quanto no Kubernetes. Ambos consomem o mesmo dashboard **"FCG — Visão geral"** e as mesmas métricas expostas pelos microsserviços via OpenTelemetry / OTel Prometheus exporter.
 
-- **Docker Compose** — serviços `prometheus` e `grafana` inclusos em `docker-compose.yml` e `docker-compose-development.yml`. Basta `docker compose up` e acessar `http://localhost:3000` (admin / admin).
-- **Kubernetes** — implantação via Helm (`kube-prometheus-stack`) com manifestos versionados em `k8s/infrastructure/observability/`.
-
-Ambos consomem o mesmo dashboard **"FCG — Visão geral"** e as mesmas métricas expostas pelos microsserviços.
-
-### Justificativa da escolha
-
-- Os microsserviços já usam **.NET Aspire com OpenTelemetry** por padrão, e o exporter Prometheus se pluga diretamente ao pipeline OTel existente — instrumentação em ~5 linhas por serviço.
-- O `kube-prometheus-stack` (Helm) entrega Prometheus, Grafana, `kube-state-metrics` e `node-exporter` em um único comando, com dashboards de infraestrutura K8s já prontos.
-- Toda a configuração (values do Helm, `ServiceMonitor`, dashboards) fica versionada no repositório, garantindo reprodutibilidade.
-- Sem dependências externas (contas, chaves, trials).
-
-### O que é coletado
-
-- **Métricas HTTP** dos microsserviços `fcg-users-api`, `fcg-catalog-api`, `fcg-payments-api`: taxa de requisições por status code, latência p50/p95/p99, taxa de erros, requisições em andamento.
-- **Métricas do runtime .NET**: uso de memória, coletas de GC por geração.
-- **Métricas de infraestrutura K8s**: consumo de CPU/memória por pod, saúde dos nós, kubelet.
-
-O `fcg-notifications` (Worker) não é coletado nesta fase — está sendo migrado para Lambda na Parte 2, onde métricas ficam no CloudWatch nativamente.
-
-### Como subir
-
-Passo a passo, targets, dashboards e troubleshooting:
-
-👉 [Guia da Stack de Observabilidade](k8s/infrastructure/observability/README.md)
+- **Docker Compose** — ver seção Prometheus/Grafana em [Documentação do Docker Compose](docs/docker-compose.md).
+- **Kubernetes** — ver [Observabilidade (Prometheus + Grafana)](docs/k8s/infrastructure/observability.md).

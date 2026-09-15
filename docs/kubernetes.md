@@ -46,6 +46,7 @@ A documentação de cada componente encontra-se em:
 - [Redis](k8s/infrastructure/redis.md)
 - [MongoDB](k8s/infrastructure/mongodb.md)
 - [Kong API Gateway](k8s/infrastructure/kong.md)
+- [Observabilidade (Prometheus + Grafana)](k8s/infrastructure/observability.md)
 
 ## Microsserviços
 
@@ -77,7 +78,7 @@ No Windows, abra o **Git Bash** na raiz do repositório e execute os comandos ab
 ./scripts/deploy.sh
 ```
 
-Responsável por realizar o deploy da infraestrutura compartilhada, incluindo PostgreSQL, RabbitMQ, Redis, MongoDB e Kong API Gateway, e dos microsserviços da plataforma no Kubernetes.
+Responsável por realizar o deploy da infraestrutura compartilhada, incluindo PostgreSQL, RabbitMQ, Redis, MongoDB, Kong API Gateway e a stack de observabilidade (Prometheus + Grafana), e dos microsserviços da plataforma no Kubernetes.
 
 ## 🧹 Cleanup do cluster
 

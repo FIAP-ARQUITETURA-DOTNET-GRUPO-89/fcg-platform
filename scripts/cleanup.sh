@@ -5,6 +5,16 @@ set -e
 echo "🧹 Removendo recursos da plataforma..."
 
 echo ""
+echo "📈 Removendo stack de observabilidade..."
+if command -v helm >/dev/null 2>&1; then
+  helm uninstall kube-prom -n observability --ignore-not-found >/dev/null 2>&1 || true
+else
+  echo "⚠️  Helm não encontrado. Pule este passo ou remova o release manualmente."
+fi
+kubectl delete -k k8s/infrastructure/observability/ --ignore-not-found
+kubectl delete namespace observability --ignore-not-found
+
+echo ""
 echo "🚪 Removendo Kong API Gateway..."
 kubectl delete -k k8s/infrastructure/kong/ --ignore-not-found
 
