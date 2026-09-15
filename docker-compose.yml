@@ -45,6 +45,21 @@ services:
       - fcg-network
 
   ####################################################
+  # MONGODB
+  ####################################################
+
+  mongodb:
+    image: mongo:latest
+    container_name: fcg-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - fcg-network
+
+  ####################################################
   # RABBITMQ
   ####################################################
 
@@ -118,6 +133,7 @@ services:
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
       ConnectionStrings__redis: redis:6379
+      ConnectionStrings__Mongo: mongodb://mongodb:27017
 
     ports:
       - "7030:7030"
@@ -129,6 +145,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mongodb:
+        condition: service_started
 
     networks:
       - fcg-network
@@ -149,14 +167,16 @@ services:
       JwtSettings__ExpirationHours: "2"
 
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgcatalog-db;Username=postgres;Password=postgres
-
       ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+      ConnectionStrings__Mongo: mongodb://mongodb:27017
 
     depends_on:
       postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      mongodb:
+        condition: service_started
       catalog-api:
         condition: service_started
 
@@ -224,7 +244,6 @@ services:
     networks:
       - fcg-network
 
-
   ####################################################
   # KONG API GATEWAY
   ####################################################
@@ -259,6 +278,7 @@ services:
 volumes:
   postgres-data:
   redis-data:
+  mongodb-data:
 
 networks:
   fcg-network:
