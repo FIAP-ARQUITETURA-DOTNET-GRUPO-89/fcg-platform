@@ -224,33 +224,6 @@ services:
     networks:
       - fcg-network
 
-  ####################################################
-  # NOTIFICATIONS WORKER
-  ####################################################
-
-  notifications-worker:
-    image: jondamiao/fcg-notifications-worker:1.0.0
-    container_name: fcg-notifications-worker
-    restart: unless-stopped
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      RUN_MIGRATION: "true"
-
-      JwtSettings__Issuer: FcgUsers-Issuer
-      JwtSettings__SecurityKey: FcgUsers_Secret_Key_2026_High_Security_Token
-      JwtSettings__ExpirationHours: "2"
-
-      ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcgnotifications-db;Username=postgres;Password=postgres
-      ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
-
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-
-    networks:
-      - fcg-network
 
   ####################################################
   # KONG API GATEWAY
