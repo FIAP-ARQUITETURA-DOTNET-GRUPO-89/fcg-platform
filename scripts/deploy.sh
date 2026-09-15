@@ -32,6 +32,12 @@ kubectl apply -f k8s/infrastructure/redis/deployment.yaml
 kubectl apply -f k8s/infrastructure/redis/service.yaml
 
 echo ""
+echo "🍃 Deploy do MongoDB..."
+kubectl apply -f k8s/infrastructure/mongodb/pvc.yaml
+kubectl apply -f k8s/infrastructure/mongodb/deployment.yaml
+kubectl apply -f k8s/infrastructure/mongodb/service.yaml
+
+echo ""
 echo "⏳ Aguardando PostgreSQL..."
 kubectl rollout status deployment/postgres -n "${NAMESPACE}"
 
@@ -42,6 +48,10 @@ kubectl rollout status deployment/rabbitmq -n "${NAMESPACE}"
 echo ""
 echo "⏳ Aguardando Redis..."
 kubectl rollout status deployment/fcg-redis -n "${NAMESPACE}"
+
+echo ""
+echo "⏳ Aguardando MongoDB..."
+kubectl rollout status deployment/mongodb -n "${NAMESPACE}"
 
 echo ""
 echo "👤 Deploy do FCG Users API..."
@@ -66,6 +76,14 @@ kubectl apply -f microservices/fcg-payments/k8s/api/
 echo ""
 echo "👷 Deploy do FCG Payments Worker..."
 kubectl apply -f microservices/fcg-payments/k8s/worker/
+
+echo ""
+echo "🚪 Deploy do Kong API Gateway..."
+kubectl apply -k k8s/infrastructure/kong/
+
+echo ""
+echo "⏳ Aguardando Kong API Gateway..."
+kubectl rollout status deployment/kong -n "${NAMESPACE}"
 
 echo ""
 echo "📋 Recursos implantados:"
