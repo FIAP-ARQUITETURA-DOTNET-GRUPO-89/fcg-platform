@@ -20,6 +20,8 @@ A plataforma é composta pelos seguintes serviços:
 | RabbitMQ | Broker | 5672 |
 | RabbitMQ Management | Dashboard | 15672 |
 | Redis | Cache | 6379 |
+| Prometheus | Observabilidade | 9090 |
+| Grafana | Observabilidade | 3000 |
 
 > **Observação:** Atualmente apenas o microserviço **Users** não possui Worker.
 
@@ -145,6 +147,71 @@ Resultado esperado:
 ```text
 PONG
 ```
+
+---
+
+## Prometheus
+
+O **Prometheus** coleta métricas dos microsserviços FCG (Users, Catalog, Payments) a partir do endpoint `/metrics` que cada API expõe no formato Prometheus.
+
+| Configuração | Valor |
+|--------------|-------|
+| URL | http://localhost:9090 |
+| Serviço Docker | prometheus |
+| Rede | fcg-network |
+
+A imagem utilizada é:
+
+```text
+prom/prometheus:v2.55.1
+```
+
+Configuração de scrape em:
+
+```text
+docker/infrastructure/prometheus/prometheus.yml
+```
+
+Para inspecionar quais alvos estão sendo coletados, acesse `http://localhost:9090/targets`.
+
+---
+
+## Grafana
+
+O **Grafana** exibe os dashboards em tempo real com métricas coletadas pelo Prometheus.
+
+| Configuração | Valor |
+|--------------|-------|
+| URL | http://localhost:3000 |
+| Usuário | admin |
+| Senha | admin |
+| Serviço Docker | grafana |
+| Rede | fcg-network |
+
+A imagem utilizada é:
+
+```text
+grafana/grafana:11.3.0
+```
+
+O Grafana já vem com o datasource **Prometheus** e o dashboard **FCG — Visão geral** provisionados automaticamente. Os arquivos de configuração estão em:
+
+```text
+docker/infrastructure/grafana/
+├── provisioning/
+│   ├── datasources/prometheus.yml
+│   └── dashboards/fcg.yml
+└── dashboards/
+    └── fcg-overview.json
+```
+
+Persistência do estado do Grafana via volume:
+
+```text
+grafana-data
+```
+
+Após subir a plataforma, acesse `http://localhost:3000` e o dashboard estará na pasta **FCG** dentro do menu **Dashboards**.
 
 ---
 
@@ -326,4 +393,5 @@ docker compose up -d
 - Os Workers consomem eventos publicados pelas APIs utilizando RabbitMQ.
 - O FCG Catalog utiliza o Redis como cache distribuído.
 - As configurações de banco de dados, mensageria e cache são injetadas via variáveis de ambiente.
+- O Prometheus faz scrape do endpoint `/metrics` de cada API a cada 15 s; o Grafana consome esses dados e exibe no dashboard **FCG — Visão geral**.
 - Recomenda-se utilizar versões específicas das imagens (`1.0.0`, `1.0.1`, etc.) em ambientes de produção para garantir previsibilidade nos deployments.

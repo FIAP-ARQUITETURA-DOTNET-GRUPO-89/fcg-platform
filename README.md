@@ -9,6 +9,7 @@ Repositório responsável pela orquestração da plataforma FCG, contendo config
 - [🏛️ Arquitetura](#️-arquitetura)
 - [🐳 Executar com Docker](#-executar-com-docker)
 - [☸️ Executar com Kubernetes](#️-executar-com-kubernetes)
+- [📈 Observabilidade](#-observabilidade)
 
 ## 📦 Clonando o repositório
 
@@ -49,3 +50,10 @@ Para executar a FCG Platform localmente utilizando Docker Compose:
 Para executar a FCG Platform em um cluster Kubernetes:
 
 👉 [Guia de Kubernetes](docs/kubernetes.md)
+
+## 📈 Observabilidade
+
+A plataforma adota uma **stack de código aberto baseada em Prometheus + Grafana**, disponível tanto no `docker-compose` quanto no Kubernetes. Ambos consomem o mesmo dashboard **"FCG — Visão geral"** e as mesmas métricas expostas pelos microsserviços via OpenTelemetry / OTel Prometheus exporter.
+
+- **Docker Compose** — ver seção Prometheus/Grafana em [Documentação do Docker Compose](docs/docker-compose.md).
+- **Kubernetes** — ver [Observabilidade (Prometheus + Grafana)](docs/k8s/infrastructure/observability.md).

@@ -277,10 +277,52 @@ services:
     networks:
       - fcg-network
 
+  ####################################################
+  # PROMETHEUS
+  ####################################################
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: fcg-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=6h
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - fcg-network
+
+  ####################################################
+  # GRAFANA
+  ####################################################
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: fcg-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/infrastructure/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/infrastructure/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - fcg-network
+
 volumes:
   postgres-data:
   redis-data:
   mongodb-data:
+  grafana-data:
 
 networks:
   fcg-network:

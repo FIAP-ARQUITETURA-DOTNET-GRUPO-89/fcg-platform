@@ -86,6 +86,31 @@ echo "⏳ Aguardando Kong API Gateway..."
 kubectl rollout status deployment/kong -n "${NAMESPACE}"
 
 echo ""
+echo "📈 Deploy da stack de observabilidade (Prometheus + Grafana)..."
+
+if ! command -v helm >/dev/null 2>&1; then
+  echo "⚠️  Helm não encontrado. Pulando a instalação da stack de observabilidade."
+  echo "    Instale o Helm 3 (https://helm.sh/) e reexecute o script para provisioná-la."
+else
+  kubectl apply -k k8s/infrastructure/observability/
+
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts >/dev/null
+  helm repo update >/dev/null
+
+  GRAFANA_ADMIN_PASSWORD="${GRAFANA_ADMIN_PASSWORD:-admin}"
+
+  helm upgrade --install kube-prom prometheus-community/kube-prometheus-stack \
+    --namespace observability \
+    --values k8s/infrastructure/observability/values-kube-prometheus-stack.yaml \
+    --set grafana.adminPassword="${GRAFANA_ADMIN_PASSWORD}" \
+    --wait
+
+  echo ""
+  echo "🔑 Grafana admin — usuário: admin  senha: ${GRAFANA_ADMIN_PASSWORD}"
+  echo "    Em produção, defina GRAFANA_ADMIN_PASSWORD antes de rodar o script."
+fi
+
+echo ""
 echo "📋 Recursos implantados:"
 kubectl get all -n "${NAMESPACE}"
 

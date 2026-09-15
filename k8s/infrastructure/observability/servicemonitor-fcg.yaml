@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fcg-services
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: fcg-platform
+    app.kubernetes.io/component: observability
+spec:
+  namespaceSelector:
+    matchNames:
+      - fcg-platform
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: fcg-platform
+      app.kubernetes.io/component: api
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
