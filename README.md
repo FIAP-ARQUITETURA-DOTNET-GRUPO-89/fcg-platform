@@ -9,6 +9,7 @@ Repositório responsável pela orquestração da plataforma FCG, contendo config
 - [🏛️ Arquitetura](#️-arquitetura)
 - [🐳 Executar com Docker](#-executar-com-docker)
 - [☸️ Executar com Kubernetes](#️-executar-com-kubernetes)
+- [☁️ Executar na AWS](#️-executar-na-aws)
 - [📈 Observabilidade](#-observabilidade)
 
 ## 📦 Clonando o repositório
