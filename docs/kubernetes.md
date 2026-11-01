@@ -45,6 +45,7 @@ A documentação de cada componente encontra-se em:
 - [RabbitMQ](k8s/infrastructure/rabbitmq.md)
 - [Redis](k8s/infrastructure/redis.md)
 - [MongoDB](k8s/infrastructure/mongodb.md)
+- [OpenSearch (busca avançada)](k8s/infrastructure/opensearch.md)
 - [Kong API Gateway](k8s/infrastructure/kong.md)
 - [Observabilidade (Prometheus + Grafana)](k8s/infrastructure/observability.md)
 
