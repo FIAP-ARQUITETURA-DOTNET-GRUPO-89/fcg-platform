@@ -12,10 +12,25 @@ e cria:
 - Cluster EKS `fcg-platform` na região `sa-east-1`.
 - Endpoint público e privado do Kubernetes.
 - Complementos `vpc-cni`, `coredns` e `kube-proxy`.
+- Provedor OIDC do cluster e role IAM do EBS CSI Driver.
+- Complemento `aws-ebs-csi-driver` para provisionar volumes EBS dos PVCs.
 - Grupo de nós `fcg-workers`.
 - Instâncias `t3.small` com disco EBS de 20 GiB.
 - Escalabilidade inicial de 1 nó, com mínimo e máximo iguais a 1.
 - Roles IAM separadas para o cluster e para os nós.
+
+## Escolha um único fluxo
+
+Este projeto oferece duas formas alternativas de criar a infraestrutura:
+
+1. **Manual:** siga os documentos em `docs/iac/manual`, usando o Console AWS,
+   AWS CLI, `eksctl` e `kubectl`.
+2. **Terraform:** siga este documento do início ao fim.
+
+Não misture os fluxos para o mesmo cluster. Se o cluster e seus recursos forem
+criados pelo Terraform, não execute manualmente as etapas equivalentes de
+OIDC, IAM ou addons. Se forem criados manualmente, não execute `terraform
+apply` sobre esses mesmos recursos.
 
 ## Pré-requisitos
 
@@ -33,7 +48,7 @@ e cria:
 
 4. Confirme que a conta possui uma VPC padrão com sub-redes suficientes para o
    cluster.
-5. Garanta permissões para criar EKS, EC2, IAM e os complementos do EKS.
+5. Garanta permissões para criar EKS, EC2, IAM, OIDC e os complementos do EKS.
 
 > O Terraform não cria uma VPC. Ele reutiliza a VPC padrão e todas as sub-redes
 > disponíveis nela.
@@ -112,6 +127,39 @@ Para aprovar sem confirmação interativa, use somente após revisar o plano:
 terraform apply -auto-approve
 ```
 
+### Erro `EntityAlreadyExists` na role do EBS CSI
+
+Se aparecer o erro:
+
+```text
+EntityAlreadyExists: Role with name AmazonEKS_EBS_CSI_DriverRole already exists
+```
+
+essa role foi criada anteriormente fora do state atual do Terraform. Isso
+ocorre, por exemplo, quando o EBS CSI Driver foi configurado manualmente.
+Importe a role existente para o state antes de tentar o `apply` novamente:
+
+```powershell
+terraform import aws_iam_role.ebs_csi `
+  "AmazonEKS_EBS_CSI_DriverRole"
+```
+
+Depois, revise o plano:
+
+```powershell
+terraform plan
+```
+
+Se o plano mostrar apenas ajustes na configuração da role ou do EBS CSI
+Driver, execute:
+
+```powershell
+terraform apply
+```
+
+Não exclua a role manualmente apenas para contornar o erro. Ela pode estar
+sendo utilizada pelo addon `aws-ebs-csi-driver` ou por recursos existentes.
+
 ## Validar o ambiente
 
 Consulte os outputs:
@@ -142,6 +190,27 @@ aws eks describe-addon `
 ```
 
 O status esperado é `ACTIVE`.
+
+O Terraform também configura automaticamente os recursos necessários para
+volumes persistentes no EKS:
+
+- Provedor OIDC associado ao cluster.
+- Role IAM vinculada à conta de serviço do EBS CSI Driver.
+- Política `AmazonEBSCSIDriverPolicy`.
+- Addon `aws-ebs-csi-driver`.
+
+Valide o addon:
+
+```powershell
+aws eks describe-addon `
+  --region sa-east-1 `
+  --cluster-name fcg-platform `
+  --addon-name aws-ebs-csi-driver `
+  --query "addon.{status:status,health:health.issues}"
+```
+
+O status esperado é `ACTIVE`. Depois disso, os PVCs que usam a StorageClass
+`gp2` poderão provisionar volumes EBS para o PostgreSQL.
 
 ### Recuperação após falha do addon
 
