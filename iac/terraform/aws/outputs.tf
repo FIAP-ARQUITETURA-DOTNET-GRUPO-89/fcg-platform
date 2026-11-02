@@ -22,3 +22,13 @@ output "subnet_ids" {
   description = "Sub-redes da VPC padrão utilizadas pelo cluster e pelos nós."
   value       = data.aws_subnets.default.ids
 }
+
+output "cluster_oidc_issuer" {
+  description = "URL do provedor OIDC utilizado pelo EBS CSI Driver."
+  value       = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}
+
+output "ebs_csi_role_arn" {
+  description = "ARN da role IAM do EBS CSI Driver."
+  value       = aws_iam_role.ebs_csi.arn
+}

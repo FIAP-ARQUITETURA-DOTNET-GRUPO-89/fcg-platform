@@ -10,6 +10,12 @@ variable "cluster_name" {
   default     = "fcg-platform"
 }
 
+variable "ebs_csi_role_name" {
+  description = "Nome da role IAM usada pelo EBS CSI Driver."
+  type        = string
+  default     = "AmazonEKS_EBS_CSI_DriverRole"
+}
+
 variable "kubernetes_version" {
   description = "Versão do Kubernetes usada pelo cluster EKS."
   type        = string
