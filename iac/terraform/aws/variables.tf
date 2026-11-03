@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "Região AWS onde o cluster será criado."
   type        = string
-  default     = "sa-east-1"
+  default     = "us-east-1"
 }
 
 variable "cluster_name" {

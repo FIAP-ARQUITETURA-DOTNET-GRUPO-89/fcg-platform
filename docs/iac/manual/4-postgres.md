@@ -1,154 +1,157 @@
-# 📘 Runbook — PostgreSQL no AWS EKS
+# 🐘 4º passo: Implantação do PostgreSQL no Amazon EKS
 
-Projeto: FIAP FCG\
-Cluster: `fcg-platform`\
-Região AWS: São Paulo (`sa-east-1`)\
-Namespace Kubernetes: `fcg-platform`\
-Banco: PostgreSQL 16.9\
-Armazenamento: PVC de 1 GiB, StorageClass `gp2`
+**Projeto:** FIAP FCG  
+**Cluster:** `fcg-platform`  
+**Região AWS:** Virgínia do Norte (`us-east-1`)  
+**Namespace Kubernetes:** `fcg-platform`  
+**Banco:** PostgreSQL 16.9  
+**Armazenamento:** PVC de 1 GiB, StorageClass `gp2`
+
+---
 
 ## 1. Pré-requisitos
 
-Antes de começar, confirme que você tem:
+Antes de começar, confirme que você possui:
 
-- AWS CLI instalado e autenticado.
-- `kubectl` instalado.
-- `eksctl` instalado.
-- Acesso ao cluster EKS e permissões para executar os comandos.
-- O repositório `fcg-platform` atualizado.
-- O cluster EKS e pelo menos um nó de trabalho disponíveis.
+- [ ] AWS CLI instalado e autenticado.
+- [ ] `kubectl` instalado.
+- [ ] `eksctl` instalado.
+- [ ] Acesso ao cluster EKS e permissões necessárias.
+- [ ] Cluster EKS ativo.
+- [ ] Pelo menos um nó de trabalho com status `Ready`.
+- [ ] Repositório `fcg-platform` atualizado.
 
-No PowerShell, entre na pasta dos manifests:
+No PowerShell, acesse a pasta dos manifests:
 
-```
+```powershell
 cd "C:\REPOSITORIO\4. FIAP\fcg-platform\k8s"
 ```
 
 ### 1.1. Confirmar a identidade AWS
 
-```
+```powershell
 aws sts get-caller-identity
 ```
 
-Confirme a região e o status do cluster:
+Verifique se o cluster está ativo:
 
-```
+```powershell
 aws eks describe-cluster `
   --name fcg-platform `
-  --region sa-east-1 `
+  --region us-east-1 `
   --query "cluster.status" `
   --output text
 ```
 
-O resultado esperado é:
+Resultado esperado:
 
-```
+```text
 ACTIVE
 ```
 
-### 1.2. Atualizar a configuração local do Kubernetes
+### 1.2. Atualizar o kubeconfig
 
-```
+Configure o acesso local ao cluster:
+
+```powershell
 aws eks update-kubeconfig `
   --name fcg-platform `
-  --region sa-east-1
+  --region us-east-1
 ```
 
-Valide o acesso:
+Valide o contexto e os nós:
 
-```
+```powershell
+kubectl config current-context
 kubectl get nodes
 ```
 
-O nó deve aparecer com status `Ready`.
+Os nós devem estar disponíveis com status `Ready`.
+
+---
 
 ## 2. Preparar o armazenamento persistente
 
-O PostgreSQL utiliza um PVC (PersistentVolumeClaim) para armazenar os dados fora do ciclo de vida do contêiner.
+O PostgreSQL utiliza um PVC (_PersistentVolumeClaim_) para armazenar os dados fora do ciclo de vida do contêiner.
 
-O armazenamento persistente é provisionado na AWS por meio do EBS CSI Driver.
+Na infraestrutura criada manualmente, o provisionamento do volume EBS depende do **EBS CSI Driver**, que permite ao Kubernetes solicitar e gerenciar volumes na AWS.
 
 ### 2.1. Verificar se o EBS CSI Driver está instalado
 
-```
+Consulte o status do complemento:
+
+```powershell
 aws eks describe-addon `
   --cluster-name fcg-platform `
-  --region sa-east-1 `
+  --region us-east-1 `
   --addon-name aws-ebs-csi-driver `
   --query "addon.status" `
   --output text
 ```
 
-O resultado esperado é:
+Resultado esperado:
 
-```
+```text
 ACTIVE
 ```
 
-Se retornar `ResourceNotFoundException`, significa que o complemento ainda não está instalado no cluster.
+Se retornar `ResourceNotFoundException`, significa que o complemento ainda não está instalado.
 
-Confira também os recursos do driver:
+Confira também os Pods e as StorageClasses:
 
-```
+```powershell
 kubectl get pods -n kube-system
 kubectl get storageclass
+kubectl get storageclass gp2
 ```
 
 A StorageClass utilizada pelo PostgreSQL é `gp2`, com provisionador `ebs.csi.aws.com`.
 
-Confira se ela existe:
+### 2.2. Identificar a função IAM do driver
 
-```
-kubectl get storageclass gp2
-```
+A função IAM utilizada pelo EBS CSI Driver é:
 
-### 2.2. Recursos IAM do driver
+**Nome:** `AmazonEKS_EBS_CSI_DriverRole`
 
-A Função do IAM criada para o driver é:
+**ARN:**
 
-Nome: `AmazonEKS_EBS_CSI_DriverRole`
-
-ARN:
-
-```
+```text
 arn:aws:iam::742057128217:role/AmazonEKS_EBS_CSI_DriverRole
 ```
 
-Política gerenciada associada:
+**Política gerenciada associada:**
 
-```
+```text
 AmazonEBSCSIDriverPolicyV2
 ```
 
-Essa função permite que o EBS CSI Driver realize as operações necessárias para provisionar e gerenciar volumes EBS.
+Essa função concede ao driver as permissões necessárias para provisionar e gerenciar volumes EBS.
 
 ### 2.3. Associar o provedor OIDC ao cluster
 
-O EKS utiliza o provedor OIDC para permitir que uma aplicação executada dentro do Kubernetes assuma uma Função do IAM por meio de uma Service Account.
-
-Sempre que o cluster for criado novamente, associe o provedor OIDC do novo cluster.
+O EKS utiliza o provedor OIDC para permitir que uma aplicação executada dentro do Kubernetes assuma uma função IAM por meio de uma Service Account.
 
 Execute:
 
-```
+```powershell
 eksctl utils associate-iam-oidc-provider `
   --cluster fcg-platform `
-  --region sa-east-1 `
+  --region us-east-1 `
   --approve
 ```
 
-O comando cria o provedor OIDC para o cluster, caso ainda não exista.
+O comando associa o provedor OIDC ao cluster, caso ainda não exista.
 
-### 2.4. Obter o ID OIDC do cluster atual
+### 2.4. Obter o identificador OIDC atual
 
-Importante: cada cluster EKS possui seu próprio identificador OIDC. Quando um cluster é excluído e criado novamente, esse identificador pode mudar.
+Cada cluster EKS possui seu próprio identificador OIDC. Se o cluster for excluído e criado novamente, esse identificador poderá mudar.
 
-Para descobrir o identificador atual, execute no PowerShell:
+Execute no PowerShell:
 
-```
+```powershell
 $OIDCIssuer = aws eks describe-cluster `
   --name fcg-platform `
-  --region sa-east-1 `
+  --region us-east-1 `
   --query "cluster.identity.oidc.issuer" `
   --output text
 
@@ -158,44 +161,34 @@ Write-Host "URL do provedor OIDC: $OIDCIssuer"
 Write-Host "ID OIDC do cluster atual: $OIDC_ID"
 ```
 
-O comando executa três etapas:
-
-1. Consulta os detalhes do cluster EKS.
-2. Obtém a URL do provedor OIDC.
-3. Extrai somente o identificador que aparece depois de `/id/`.
+O comando consulta os detalhes do cluster, obtém a URL do provedor OIDC e extrai seu identificador.
 
 O resultado será semelhante a:
 
+```text
+URL do provedor OIDC: https://oidc.eks.us-east-1.amazonaws.com/id/IDENTIFICADOR
+ID OIDC do cluster atual: IDENTIFICADOR
 ```
-URL do provedor OIDC: https://oidc.eks.sa-east-1.amazonaws.com/id/6E83E3D6F3050D3B4BF1DDF4A2D589C7
 
-ID OIDC do cluster atual: 6E83E3D6F3050D3B4BF1DDF4A2D589C7
-```
+O identificador acima é ilustrativo. Utilize sempre o valor retornado pelo seu cluster atual.
 
-O identificador acima é apenas um exemplo de saída. Sempre utilize o valor retornado pelo seu cluster atual.
+### 2.5. Atualizar a relação de confiança da função IAM
 
-Guarde o valor de `$OIDC_ID`, pois ele será utilizado na próxima etapa.
+A função `AmazonEKS_EBS_CSI_DriverRole` precisa confiar no provedor OIDC do cluster atual.
 
-### 2.5. Atualizar a relação de confiança da Função do IAM
+Se o cluster foi recriado, a relação de confiança poderá continuar apontando para o identificador antigo.
 
-A Função `AmazonEKS_EBS_CSI_DriverRole` precisa confiar no provedor OIDC do cluster atual.
+No Console AWS:
 
-Quando o cluster é excluído e recriado, a Função do IAM pode continuar existindo, mas sua relação de confiança poderá apontar para o identificador OIDC antigo.
-
-Por isso, é necessário atualizar a relação de confiança.
-
-Como atualizar pelo Console AWS:
-
-1. Acesse o serviço IAM.
-2. No menu lateral, clique em Funções.
+1. Acesse o serviço **IAM**.
+2. No menu lateral, selecione **Funções**.
 3. Pesquise e abra `AmazonEKS_EBS_CSI_DriverRole`.
-4. Acesse a aba Relações de confiança.
-5. Clique em Editar política de confiança.
-6. Localize o identificador OIDC antigo na política.
-7. Substitua todas as ocorrências pelo valor de `$OIDC_ID` obtido na etapa anterior.
-8. Clique em Atualizar política de confiança.
+4. Acesse a aba **Relações de confiança**.
+5. Clique em **Editar política de confiança**.
+6. Substitua as ocorrências do identificador OIDC antigo pelo valor de `$OIDC_ID`.
+7. Clique em **Atualizar política de confiança**.
 
-É necessário atualizar o identificador nos três pontos da política:
+O identificador deve ser atualizado nos três pontos:
 
 - `Principal.Federated`
 - Condição `aud`
@@ -203,22 +196,22 @@ Como atualizar pelo Console AWS:
 
 Exemplo de política de confiança:
 
-Substitua `ID_OIDC_DO_CLUSTER_ATUAL` pelo identificador obtido no PowerShell.
+Substitua `ID_OIDC_DO_CLUSTER_ATUAL` pelo identificador obtido na etapa anterior.
 
-```
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
     {
       "Effect": "Allow",
       "Principal": {
-        "Federated": "arn:aws:iam::742057128217:oidc-provider/oidc.eks.sa-east-1.amazonaws.com/id/ID_OIDC_DO_CLUSTER_ATUAL"
+        "Federated": "arn:aws:iam::742057128217:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/ID_OIDC_DO_CLUSTER_ATUAL"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "oidc.eks.sa-east-1.amazonaws.com/id/ID_OIDC_DO_CLUSTER_ATUAL:aud": "sts.amazonaws.com",
-          "oidc.eks.sa-east-1.amazonaws.com/id/ID_OIDC_DO_CLUSTER_ATUAL:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+          "oidc.eks.us-east-1.amazonaws.com/id/ID_OIDC_DO_CLUSTER_ATUAL:aud": "sts.amazonaws.com",
+          "oidc.eks.us-east-1.amazonaws.com/id/ID_OIDC_DO_CLUSTER_ATUAL:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
         }
       }
     }
@@ -226,7 +219,7 @@ Substitua `ID_OIDC_DO_CLUSTER_ATUAL` pelo identificador obtido no PowerShell.
 }
 ```
 
-Atenção aos valores que devem ser preservados:
+Preserve os seguintes valores:
 
 | Campo         | Valor                                                     |
 | ------------- | --------------------------------------------------------- |
@@ -234,69 +227,62 @@ Atenção aos valores que devem ser preservados:
 | `sub`         | `system:serviceaccount:kube-system:ebs-csi-controller-sa` |
 | Provedor OIDC | Identificador do cluster atual                            |
 
-Não substitua os valores de `aud` e `sub`. Apenas atualize o identificador OIDC.
+**Importante:** não altere os valores de `aud` e `sub`. Apenas atualize o identificador OIDC.
 
-Importante: essa atualização deve ser repetida sempre que o cluster EKS for excluído e recriado e seu identificador OIDC mudar. A mesma Função do IAM pode ser reutilizada.
+Essa atualização deve ser repetida se o cluster for recriado e seu identificador OIDC mudar.
 
 ### 2.6. Instalar o EBS CSI Driver
 
-Depois de associar o OIDC e atualizar a relação de confiança, instale o complemento no cluster:
+Depois de associar o OIDC e atualizar a relação de confiança, instale o complemento:
 
-```
+```powershell
 aws eks create-addon `
   --cluster-name fcg-platform `
-  --region sa-east-1 `
+  --region us-east-1 `
   --addon-name aws-ebs-csi-driver `
   --service-account-role-arn arn:aws:iam::742057128217:role/AmazonEKS_EBS_CSI_DriverRole
 ```
 
-Aguarde a instalação terminar.
+Aguarde a conclusão da instalação.
 
 ### 2.7. Validar a instalação
 
 Consulte o status do complemento:
 
-```
+```powershell
 aws eks describe-addon `
   --cluster-name fcg-platform `
-  --region sa-east-1 `
+  --region us-east-1 `
   --addon-name aws-ebs-csi-driver `
   --query "addon.status" `
   --output text
 ```
 
-O resultado esperado é:
+Resultado esperado:
 
-```
+```text
 ACTIVE
 ```
 
-Verifique os Pods do driver:
+Confira os Pods do driver e a StorageClass:
 
-```
+```powershell
 kubectl get pods -n kube-system
-```
-
-Confira a StorageClass:
-
-```
 kubectl get storageclass
-```
-
-E confirme especificamente a `gp2`:
-
-```
 kubectl get storageclass gp2
 ```
 
-Somente depois dessas verificações prossiga com a criação do PostgreSQL.
+Com o driver instalado e a StorageClass disponível, prossiga para a criação do PostgreSQL.
+
+---
 
 ## 3. Criar os recursos do PostgreSQL
 
-Os manifests ficam em:
+Os manifests ficam organizados na seguinte estrutura:
 
-```
+```text
 k8s/
+├── namespace.yaml
 └── infrastructure/
     └── postgres/
         ├── configmap.yaml
@@ -306,27 +292,29 @@ k8s/
         └── service.yaml
 ```
 
-O namespace é definido em `namespace.yaml`.
-
 ### 3.1. Criar o namespace
 
-```
+```powershell
 kubectl apply -f namespace.yaml
 ```
 
-### 3.2. Aplicar as configurações
+### 3.2. Aplicar os manifests
 
 Execute os comandos na ordem abaixo:
 
-```
+```powershell
 kubectl apply -f infrastructure/postgres/configmap.yaml
+
 kubectl apply -f infrastructure/postgres/secret.yaml
+
 kubectl apply -f infrastructure/postgres/pvc.yaml
+
 kubectl apply -f infrastructure/postgres/deployment.yaml
+
 kubectl apply -f infrastructure/postgres/service.yaml
 ```
 
-O que cada arquivo faz:
+Responsabilidade de cada arquivo:
 
 | Arquivo           | Responsabilidade                                |
 | ----------------- | ----------------------------------------------- |
@@ -336,64 +324,68 @@ O que cada arquivo faz:
 | `deployment.yaml` | Criação e gerenciamento do contêiner PostgreSQL |
 | `service.yaml`    | Acesso interno ao banco pela porta 5432         |
 
-O Secret deve conter as credenciais esperadas pelo Deployment. Não publique senhas reais no repositório Git.
+**Atenção:** o Secret deve conter as credenciais esperadas pelo Deployment. Não publique senhas reais no repositório Git.
 
 ### 3.3. Conferir o volume persistente
 
-```
+Verifique se o PVC foi provisionado:
+
+```powershell
 kubectl get pvc -n fcg-platform
 ```
 
-O PVC `postgres-pvc` deve ficar com status `Bound`.
+O PVC `postgres-pvc` deve apresentar o status `Bound`.
 
-Se permanecer `Pending`, verifique os detalhes:
+Se permanecer `Pending`, consulte os detalhes:
 
-```
+```powershell
 kubectl describe pvc postgres-pvc -n fcg-platform
 ```
 
-Problemas de provisionamento podem estar relacionados ao driver EBS CSI, à Função IAM ou à StorageClass.
+Problemas de provisionamento podem estar relacionados ao EBS CSI Driver, à função IAM ou à StorageClass.
+
+---
 
 ## 4. Acompanhar a inicialização
 
-Depois de aplicar os manifests, acompanhe o Deployment:
+Depois de aplicar os manifests, acompanhe a inicialização do Deployment:
 
-```
+```powershell
 kubectl rollout status deployment/postgres `
   -n fcg-platform `
   --timeout=180s
 ```
 
-Confira o Pod:
+Confira os Pods:
 
-```
+```powershell
 kubectl get pods -n fcg-platform
 ```
 
-O resultado esperado é semelhante a:
+Resultado esperado:
 
-```
+```text
 NAME                       READY   STATUS    RESTARTS
 postgres-xxxxxxxxxx-xxxxx  1/1     Running   0
 ```
 
-Confira o serviço:
+Confira o Service:
 
-```
+```powershell
 kubectl get svc -n fcg-platform
 ```
 
-O serviço `postgres` deve existir na porta `5432/TCP`.
+O serviço `postgres` deve estar disponível na porta `5432/TCP`.
 
-Confira os logs:
+Consulte os logs:
 
-```
+```powershell
 kubectl logs deployment/postgres -n fcg-platform
 ```
 
-Se o Pod estiver em `CrashLoopBackOff`, consulte os logs do contêiner anterior:
+Se o Pod estiver em `CrashLoopBackOff`, consulte os logs da execução anterior:
 
-```
+```powershell
 kubectl logs deployment/postgres `
   -n fcg-platform `
   --previous
@@ -401,202 +393,39 @@ kubectl logs deployment/postgres `
 
 Para investigar eventos e problemas de configuração:
 
-```
+```powershell
 kubectl describe pod `
   -l app.kubernetes.io/name=postgres `
   -n fcg-platform
 ```
 
+---
+
 ## 5. Testar a conexão com o PostgreSQL
 
-O Service é do tipo `ClusterIP`, portanto o banco não fica diretamente exposto à internet.
+O Service utiliza o tipo `ClusterIP`, portanto o banco não fica diretamente exposto à internet.
 
 Para testar o acesso localmente, abra um túnel temporário:
 
-```
+```powershell
 kubectl port-forward `
   svc/postgres `
   5432:5432 `
   -n fcg-platform
 ```
 
-## 7. Encerrar o ambiente ao final do dia
+Com o túnel ativo, uma aplicação cliente poderá acessar o banco pelo endereço:
 
-Objetivo: evitar custos do cluster e dos nós quando você não estiver estudando.
-
-Primeiro, confira quais recursos existem:
-
-```
-aws eks list-nodegroups `
-  --cluster-name fcg-platform `
-  --region sa-east-1
-
-kubectl get pvc -n fcg-platform
-kubectl get pv
+```text
+localhost:5432
 ```
 
-Anote o nome do node group e os identificadores dos volumes que aparecem nos resultados.
+Utilize as credenciais configuradas no Secret do Kubernetes.
 
-### 7.1. Se pretende preservar o cluster
+Para encerrar o túnel, pressione `Ctrl + C` no terminal.
 
-Se você quiser apenas parar de utilizar o ambiente, pode excluir o node group gerenciado pelo EKS:
+---
 
-```
-eksctl delete nodegroup `
-  --cluster fcg-platform `
-  --name NOME_DO_NODEGROUP `
-  --region sa-east-1
-```
+### ➡️ Próximo passo
 
-Substitua `NOME_DO_NODEGROUP` pelo nome real.
-
-A exclusão do node group encerra as instâncias EC2 gerenciadas por ele. Porém, o cluster EKS continua existindo e continua gerando cobrança.
-
-### 7.2. Se pretende excluir o cluster inteiro
-
-Se você realmente quiser excluir o cluster para interromper a cobrança do plano de controle, faça isso somente depois de decidir o destino dos dados.
-
-Antes de excluir:
-
-1. Verifique se precisa dos dados do PostgreSQL.
-2. Faça backup, se necessário.
-3. Identifique o volume EBS associado ao PVC.
-4. Verifique se existem Load Balancers, IPs públicos, volumes ou outros recursos criados pela aplicação.
-5. Confirme quais recursos serão excluídos e quais poderão permanecer.
-
-Não exclua manualmente a instância EC2 antes de identificar se ela pertence ao node group gerenciado pelo EKS. Prefira a exclusão do node group ou do cluster pelos mecanismos próprios do EKS.
-
-A exclusão do cluster não deve ser considerada garantia de remoção de todos os recursos associados. Verifique os recursos remanescentes no Console AWS, especialmente volumes EBS e Load Balancers.
-
-### 7.3. O que acontece com os dados?
-
-O PVC `postgres-pvc` utiliza armazenamento persistente. Excluir um Pod ou Deployment não equivale a excluir o volume.
-
-O comportamento de retenção depende da política de recuperação do PersistentVolume. Confira:
-
-```
-kubectl get pv
-```
-
-Se a política for `Delete`, o volume poderá ser excluído quando o PVC/PV for liberado. Se for `Retain`, o volume poderá continuar existindo e gerando cobrança.
-
-Não exclua o PVC nem o volume sem saber se precisa dos dados.
-
-Se não precisar preservar os dados do banco de testes, confirme que o volume pode ser descartado antes de limpar os recursos. Se precisar dos dados, faça backup ou planeje a preservação do volume antes da exclusão do cluster.
-
-## 8. Amanhã: recriar o ambiente
-
-Se você excluir o cluster inteiro, não será suficiente executar apenas os manifests do PostgreSQL. Será necessário recriar a infraestrutura.
-
-### 8.1. Ordem de recriação
-
-A sequência recomendada é:
-
-1. Criar o cluster EKS na região `sa-east-1`.
-2. Criar o node group gerenciado.
-3. Atualizar o kubeconfig local.
-4. Associar o provedor OIDC do novo cluster.
-5. Obter o novo identificador OIDC pelo PowerShell.
-6. Atualizar a relação de confiança da Função `AmazonEKS_EBS_CSI_DriverRole`.
-7. Instalar o complemento `aws-ebs-csi-driver`.
-8. Aguardar o complemento ficar `ACTIVE`.
-9. Conferir a StorageClass `gp2`.
-10. Aplicar o namespace e os manifests do PostgreSQL.
-11. Verificar o PVC, o Pod e o Service.
-
-### 8.2. Atualizar o kubeconfig
-
-```
-aws eks update-kubeconfig `
-  --name fcg-platform `
-  --region sa-east-1
-```
-
-### 8.3. Associar o provedor OIDC
-
-```
-eksctl utils associate-iam-oidc-provider `
-  --cluster fcg-platform `
-  --region sa-east-1 `
-  --approve
-```
-
-### 8.4. Obter o novo ID OIDC
-
-```
-$OIDCIssuer = aws eks describe-cluster `
-  --name fcg-platform `
-  --region sa-east-1 `
-  --query "cluster.identity.oidc.issuer" `
-  --output text
-
-$OIDC_ID = ($OIDCIssuer -split "/")[-1]
-
-Write-Host "URL do provedor OIDC: $OIDCIssuer"
-Write-Host "ID OIDC do cluster atual: $OIDC_ID"
-```
-
-Utilize o novo identificador retornado para atualizar a relação de confiança da Função `AmazonEKS_EBS_CSI_DriverRole`, conforme explicado na seção 2.5.
-
-### 8.5. Instalar o EBS CSI Driver
-
-```
-aws eks create-addon `
-  --cluster-name fcg-platform `
-  --region sa-east-1 `
-  --addon-name aws-ebs-csi-driver `
-  --service-account-role-arn arn:aws:iam::742057128217:role/AmazonEKS_EBS_CSI_DriverRole
-```
-
-Confira o status:
-
-```
-aws eks describe-addon `
-  --cluster-name fcg-platform `
-  --region sa-east-1 `
-  --addon-name aws-ebs-csi-driver `
-  --query "addon.status" `
-  --output text
-```
-
-O resultado esperado é `ACTIVE`.
-
-Confira também:
-
-```
-kubectl get pods -n kube-system
-kubectl get storageclass
-```
-
-Depois, execute novamente os comandos da seção 3.
-
-Se os dados não precisarem ser preservados, o PostgreSQL poderá ser inicializado em um novo volume. Se quiser preservar os dados, será necessário planejar a recuperação do volume ou de um backup compatível.
-
-## 9. Checklist de encerramento
-
-- Salvar alterações no Git e confirmar que os manifests estão atualizados.
-- Decidir se os dados do PostgreSQL precisam ser preservados.
-- Fazer backup, caso necessário.
-- Identificar node group, volumes EBS e recursos de rede.
-- Excluir o node group ou o cluster, conforme o plano escolhido.
-- Conferir se o cluster EKS foi excluído, caso esse seja o objetivo.
-- Conferir volumes EBS, Load Balancers, IPs públicos e outros recursos remanescentes.
-- Conferir o AWS Billing e os custos acumulados.
-
-Lembrete: o orçamento e os alertas de cobrança ajudam a monitorar os gastos, mas não interrompem automaticamente os recursos. Verifique os recursos remanescentes após a limpeza.
-
-## 10. Estado conhecido do ambiente
-
-Na última execução validada:
-
-- Cluster: `fcg-platform`
-- Região: `sa-east-1`
-- Namespace: `fcg-platform`
-- PostgreSQL: `postgres:16.9`
-- PVC: `postgres-pvc`, 1 GiB, `Bound`
-- Service: `postgres`, porta 5432
-- Deployment: `postgres`, rollout concluído
-- Pod: `1/1 Running`, sem reinicializações
-- EBS CSI: complemento instalado e Pods em inicialização durante a verificação anterior
-
-Use os comandos de verificação antes de presumir que o estado permanece igual no próximo dia.
+Com o PostgreSQL implantado e validado, prossiga para [5. Configuração do pgAdmin](./5-pg-admin.md).
