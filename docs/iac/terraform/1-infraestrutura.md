@@ -60,7 +60,7 @@ kubectl apply -f namespace.yaml
 kubectl apply -f infrastructure/postgres/
 ```
 
-### 3.2. pgAdmin
+### 3.2. pgAdmin \*opcional
 
 ```powershell
 kubectl apply -f infrastructure/pgadmin/
@@ -74,7 +74,9 @@ kubectl apply -f infrastructure/rabbitmq/
 
 ### 3.4. MongoDB
 
-_Comando de implantação a adicionar._
+```powershell
+kubectl apply -f infrastructure/mongodb/
+```
 
 ### 3.5. Redis
 
