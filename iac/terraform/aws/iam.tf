@@ -96,3 +96,44 @@ resource "aws_iam_role_policy_attachment" "ebs_csi" {
   role       = aws_iam_role.ebs_csi.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
+
+
+data "aws_iam_policy_document" "load_balancer_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.cluster.arn]
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+    }
+  }
+}
+
+resource "aws_iam_role" "load_balancer_controller" {
+  name               = "${var.cluster_name}-load-balancer-controller-role"
+  assume_role_policy = data.aws_iam_policy_document.load_balancer_assume_role.json
+}
+
+resource "aws_iam_policy" "load_balancer_controller" {
+  name   = "${var.cluster_name}-load-balancer-controller-policy"
+  policy = file("${path.module}/aws-load-balancer-controller-policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "load_balancer_controller" {
+  role       = aws_iam_role.load_balancer_controller.name
+  policy_arn = aws_iam_policy.load_balancer_controller.arn
+}
