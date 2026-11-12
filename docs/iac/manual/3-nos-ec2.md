@@ -50,7 +50,7 @@ Configure os parâmetros das instâncias EC2:
 | ------------------ | --------------------------------- |
 | Tipo de capacidade | On-Demand                         |
 | Tipo de AMI        | Amazon Linux 2023 — x86_64 padrão |
-| Tipo de instância  | `t3.small`                        |
+| Tipo de instância  | `m7i-flex.large`                  |
 | CPU                | 2 vCPUs                           |
 | Memória            | 2 GiB                             |
 | Disco              | 20 GiB                            |
@@ -58,9 +58,9 @@ Configure os parâmetros das instâncias EC2:
 | Tamanho mínimo     | 1 nó                              |
 | Tamanho máximo     | 1 nó                              |
 
-### 💡 Por que utilizar `t3.small`?
+### 💡 Por que utilizar `m7i-flex.large`?
 
-O tipo `t3.small` apareceu na consulta de instâncias elegíveis ao Free Tier na região `us-east-1`.
+O tipo `m7i-flex.large` apareceu na consulta de instâncias elegíveis ao Free Tier na região `us-east-1`.
 
 Sua arquitetura x86-64 é compatível com a imagem .NET utilizada no projeto.
 
@@ -119,7 +119,7 @@ Antes de confirmar a criação, revise as configurações:
 
 - [ ] Nome do grupo: `fcg-workers`.
 - [ ] Função IAM: `AmazonEKSNodeRole`.
-- [ ] Instância EC2: `t3.small`.
+- [ ] Instância EC2: `m7i-flex.large`.
 - [ ] Disco EBS: 20 GiB.
 - [ ] Escalabilidade configurada para um único nó.
 - [ ] Três sub-redes selecionadas.
@@ -201,7 +201,7 @@ A criação do grupo de nós adiciona recursos cobrados à conta AWS.
 
 ### Recursos que devem ser monitorados
 
-- Instância EC2 `t3.small`, conforme as condições de cobrança aplicáveis.
+- Instância EC2 `m7i-flex.large`, conforme as condições de cobrança aplicáveis.
 - Volume EBS de 20 GiB.
 - Possível endereço IPv4 público e outros custos de rede.
 - Plano de controle do EKS, cobrado separadamente enquanto o cluster existir.
@@ -228,7 +228,7 @@ Para evitar cobranças desnecessárias, siga o procedimento:
 
 ## 📌 Resultado esperado
 
-Ao final, o cluster `fcg-platform` deverá possuir um grupo de nós gerenciado chamado `fcg-workers`, com uma instância EC2 `t3.small` disponível para executar os Pods do projeto FIAP FCG.
+Ao final, o cluster `fcg-platform` deverá possuir um grupo de nós gerenciado chamado `fcg-workers`, com uma instância EC2 `m7i-flex.large` disponível para executar os Pods do projeto FIAP FCG.
 
 ### ➡️ Próximo passo
 

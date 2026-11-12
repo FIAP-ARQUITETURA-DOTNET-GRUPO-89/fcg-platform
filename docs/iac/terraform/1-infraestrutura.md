@@ -80,13 +80,17 @@ kubectl apply -f infrastructure/mongodb/
 
 ### 3.5. Redis
 
-_Comando de implantação a adicionar._
+```powershell
+kubectl apply -f infrastructure/redis/
+```
 
 ### 3.6. Kong
 
-_Comando de implantação a adicionar._
+```powershell
+kubectl apply -f infrastructure/kong/
+```
 
-### 3.7. Observabilidade
+### 3.7. Observabilidade \*opcional
 
 _Comando de implantação a adicionar._
 

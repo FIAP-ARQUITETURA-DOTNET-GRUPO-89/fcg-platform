@@ -15,7 +15,7 @@ e cria:
 - Provedor OIDC do cluster e role IAM do EBS CSI Driver.
 - Complemento `aws-ebs-csi-driver` para provisionar volumes EBS dos PVCs.
 - Grupo de nós `fcg-workers`.
-- Instâncias `t3.small` com disco EBS de 20 GiB.
+- Instâncias `m7i-flex.large` com disco EBS de 20 GiB.
 - Escalabilidade inicial de 1 nó, com mínimo e máximo iguais a 1.
 - Roles IAM separadas para o cluster e para os nós.
 
@@ -60,7 +60,7 @@ O módulo é mantido propositalmente simples:
 ```text
 iac/terraform/aws/
 ├── versions.tf            # versão do Terraform e provider AWS
-├── providers.tf           # configuração do provider AWS
+├── providers.tf           # configuração dos providers AWS e Helm
 ├── variables.tf           # parâmetros configuráveis
 ├── data.tf                # VPC e sub-redes existentes
 ├── iam.tf                 # roles e políticas IAM
