@@ -5,6 +5,11 @@ metadata:
   name: kong
   namespace: fcg-platform
 
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+
   labels:
     app.kubernetes.io/name: kong
     app.kubernetes.io/instance: kong
@@ -22,3 +27,4 @@ spec:
     - name: proxy
       port: 8000
       targetPort: proxy
+      protocol: TCP
