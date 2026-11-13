@@ -51,6 +51,10 @@ echo "🍃 Removendo MongoDB..."
 kubectl delete -f k8s/infrastructure/mongodb/ --ignore-not-found
 
 echo ""
+echo "🔎 Removendo OpenSearch..."
+kubectl delete -f k8s/infrastructure/opensearch/ --ignore-not-found
+
+echo ""
 echo "🐇 Removendo RabbitMQ..."
 kubectl delete -f k8s/infrastructure/rabbitmq/ --ignore-not-found
 
