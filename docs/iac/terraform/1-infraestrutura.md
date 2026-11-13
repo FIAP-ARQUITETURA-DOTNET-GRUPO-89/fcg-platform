@@ -87,7 +87,7 @@ kubectl apply -f infrastructure/redis/
 ### 3.6. Kong
 
 ```powershell
-kubectl apply -f infrastructure/kong/
+kubectl apply -k infrastructure/kong/
 ```
 
 ### 3.7. Observabilidade \*opcional
@@ -108,6 +108,6 @@ Verifique se os Pods estão em execução e se os PVCs estão vinculados (`Bound
 
 ---
 
-### ➡️ Próximo passo
+## ➡️ Próximo passo
 
-Consulte os procedimentos detalhados de configuração e validação na pasta [manual](../manual/).
+Siga para [2 - Implantação dos microserviços](./2-microservicos.md) para realizar o deploy das APIs e dos workers da plataforma FCG.

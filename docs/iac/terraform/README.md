@@ -1,13 +1,8 @@
-# Terraform na AWS
+# ☁️ Terraform na AWS
 
-Este guia provisiona o cluster EKS e o grupo de nós EC2 descritos nos
-documentos manuais:
+Este guia apresenta o processo de provisionamento e gerenciamento da infraestrutura AWS do projeto FIAP FCG utilizando Terraform.
 
-- [Criação do cluster EKS](../manual/2-cluster-eks.md)
-- [Criação do grupo de nós EC2](../manual/3-nos-ec2.md)
-
-O Terraform utiliza a VPC padrão da conta, as sub-redes disponíveis nessa VPC
-e cria:
+O Terraform utiliza a VPC padrão da conta, as sub-redes disponíveis nessa VPC e cria:
 
 - Cluster EKS `fcg-platform` na região `us-east-1`.
 - Endpoint público e privado do Kubernetes.
@@ -19,69 +14,63 @@ e cria:
 - Escalabilidade inicial de 1 nó, com mínimo e máximo iguais a 1.
 - Roles IAM separadas para o cluster e para os nós.
 
-## Escolha um único fluxo
+> **Atenção:** o Terraform não cria uma VPC. Ele reutiliza a VPC padrão e as sub-redes disponíveis nela.
 
-Este projeto oferece duas formas alternativas de criar a infraestrutura:
+## 📋 Pré-requisitos
 
-1. **Manual:** siga os documentos em `docs/iac/manual`, usando o Console AWS,
-   AWS CLI, `eksctl` e `kubectl`.
-2. **Terraform:** siga este documento do início ao fim.
-
-Não misture os fluxos para o mesmo cluster. Se o cluster e seus recursos forem
-criados pelo Terraform, não execute manualmente as etapas equivalentes de
-OIDC, IAM ou addons. Se forem criados manualmente, não execute `terraform
-apply` sobre esses mesmos recursos.
-
-## Pré-requisitos
-
-1. Instale o AWS CLI, conforme a seção de AWS CLI do
-   [primeiro guia manual](../manual/1-aws-cli-e-eksctl.md). O `eksctl` não é
-   necessário para executar o Terraform.
-2. Instale o Terraform.
-3. Autentique-se na conta AWS:
+1. Instale e configure as ferramentas descritas no guia de [Configuração do ambiente AWS](../setup/1-ambiente-aws.md).
+2. Autentique-se na conta AWS:
 
    ```powershell
    aws login
+   ```
+
+3. Configure a região padrão:
+
+   ```powershell
    aws configure set region us-east-1
+   ```
+
+4. Confirme a identidade autenticada:
+
+   ```powershell
    aws sts get-caller-identity
    ```
 
-4. Confirme que a conta possui uma VPC padrão com sub-redes suficientes para o
-   cluster.
-5. Garanta permissões para criar EKS, EC2, IAM, OIDC e os complementos do EKS.
-
-> O Terraform não cria uma VPC. Ele reutiliza a VPC padrão e todas as sub-redes
-> disponíveis nela.
-
-## Estrutura do projeto
+## 📁 Estrutura do projeto
 
 O módulo é mantido propositalmente simples:
 
 ```text
 iac/terraform/aws/
-├── versions.tf            # versão do Terraform e provider AWS
-├── providers.tf           # configuração dos providers AWS e Helm
-├── variables.tf           # parâmetros configuráveis
-├── data.tf                # VPC e sub-redes existentes
-├── iam.tf                 # roles e políticas IAM
-├── main.tf                # cluster EKS e addons
-├── node-group.tf          # grupo de nós EC2
+├── versions.tf           # versão do Terraform e provider AWS
+├── providers.tf          # configuração dos providers AWS e Helm
+├── variables.tf          # parâmetros configuráveis
+├── data.tf               # VPC e sub-redes existentes
+├── iam.tf                # roles e políticas IAM
+├── main.tf               # cluster EKS e addons
+├── node-group.tf         # grupo de nós EC2
 ├── outputs.tf             # valores exibidos após o apply
-└── .terraform.lock.hcl    # versões e hashes do provider
+└── .terraform.lock.hcl   # versões e hashes do provider
 ```
 
-## Inicializar o projeto
+## 🚀 Inicializar o projeto
 
 Abra o PowerShell na pasta do módulo AWS:
 
 ```powershell
-cd "..\fcg-platform\iac\terraform\aws"
+cd "C:\REPOSITORIO\4. FIAP\fcg-platform\iac\terraform\aws"
+```
+
+Inicialize o Terraform:
+
+```powershell
 terraform init
 ```
 
-## Revisar o plano
+## 🔎 Revisar o plano
 
-Valide as alterações antes de criar recursos:
+Valide os arquivos e revise os recursos que serão criados:
 
 ```powershell
 terraform fmt -check
@@ -89,24 +78,23 @@ terraform validate
 terraform plan
 ```
 
-## Criar a infraestrutura
+## 🏗️ Criar a infraestrutura
 
-Depois de revisar o plano:
+Depois de revisar o plano, execute:
 
 ```powershell
 terraform apply
 ```
 
-Digite `yes` quando solicitado. A criação do cluster e do grupo de nós pode
-levar vários minutos.
+Digite `yes` quando solicitado. A criação do cluster e do grupo de nós pode levar vários minutos.
 
-Para aprovar sem confirmação interativa, use somente após revisar o plano:
+Para aprovar sem confirmação interativa, utilize somente após revisar o plano:
 
 ```powershell
 terraform apply -auto-approve
 ```
 
-## Validar o ambiente
+## ✅ Validar o ambiente
 
 Consulte os outputs:
 
@@ -114,50 +102,41 @@ Consulte os outputs:
 terraform output
 ```
 
-Configure o contexto do Kubernetes e valide o nó:
+Configure o contexto do Kubernetes e valide o acesso ao cluster:
 
 ```powershell
 aws eks update-kubeconfig --region us-east-1 --name fcg-platform
 kubectl config current-context
 kubectl get nodes
-kubectl get pods -A
+kubectl get pods -A -o wide
 ```
 
-O nó deve aparecer como `Ready`.
+O nó disponível deve apresentar o status `Ready`.
 
-Verifique também os addons:
+## 🗑️ Remover os recursos
 
-```powershell
-aws eks describe-addon `
-  --region us-east-1 `
-  --cluster-name fcg-platform `
-  --addon-name coredns `
-  --query "addon.{status:status,health:health.issues}"
-```
-
-O status esperado é `ACTIVE`.
-
-Valide o addon:
-
-```powershell
-aws eks describe-addon `
-  --region us-east-1 `
-  --cluster-name fcg-platform `
-  --addon-name aws-ebs-csi-driver `
-  --query "addon.{status:status,health:health.issues}"
-```
-
-O status esperado é `ACTIVE`. Depois disso, os PVCs que usam a StorageClass
-`gp2` poderão provisionar volumes EBS para o PostgreSQL.
-
-## Remover os recursos
-
-Quando o ambiente não for mais necessário, remova os recursos gerenciados pelo
-Terraform:
+Quando o ambiente não for mais necessário, remova os recursos gerenciados pelo Terraform:
 
 ```powershell
 terraform destroy
 ```
 
-Confirme `yes` e depois verifique no console da AWS se não restaram volumes,
-endereços IP, Load Balancers ou outros recursos criados fora deste módulo.
+Confirme com `yes` e aguarde a conclusão da operação.
+
+### Conferir a remoção no Console AWS
+
+Após finalizar o `terraform destroy`, acesse o [Console AWS](https://console.aws.amazon.com/) pelo navegador, selecione a região `us-east-1` e confira se não restaram recursos do projeto:
+
+- **Amazon EKS:** verifique se o cluster `fcg-platform` foi excluído.
+- **Amazon EC2:** confira se não existem instâncias em execução ou pendentes de encerramento.
+- **Volumes EBS:** verifique se não restaram volumes vinculados ao projeto.
+- **Load Balancers:** confira se não existem balanceadores de carga associados ao cluster.
+
+Caso algum recurso tenha permanecido, avalie sua origem e faça a remoção manual pelo Console AWS, se não for mais necessário.
+
+**Atenção aos custos:** recursos como EKS, EC2, EBS e Load Balancers podem gerar cobranças enquanto estiverem provisionados, mesmo que não estejam sendo utilizados.
+
+## ➡️ Próximo passo
+
+1. **Opcional:** acesse [0 - Configuração do Headlamp](./0-headlamp.md) para configurar uma interface visual de gerenciamento do Kubernetes.
+2. **Próximo passo:** siga para [1 - Implantação da infraestrutura Kubernetes](./1-infraestrutura.md) para instalar os componentes necessários ao funcionamento da plataforma.
