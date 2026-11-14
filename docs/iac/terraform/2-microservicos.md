@@ -106,7 +106,25 @@ kubectl get svc -n fcg-platform
 
 Verifique se os Pods estão em execução (`Running`) e se os Deployments apresentam o número esperado de réplicas disponíveis.
 
-## 🛡️ 6. Cuidados de segurança e custos
+## 🌐 6. Atualizar o DNS no Postman
+
+Após cada `terraform apply`, um novo DNS é criado para o Load Balancer do
+Kong. Obtenha o DNS atual:
+
+```powershell
+$dns = kubectl get svc kong -n fcg-platform -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+"http://{0}:8000/api" -f $dns
+```
+
+Atualize a variável `Base-URL-Gateway-API` do arquivo `docs/api-collection/aws.postman_environment.json` com o resultado, por exemplo:
+
+```text
+http://k8s-fcgplatf-kong-29fd0d599c-80f32ab160a5e684.elb.us-east-1.amazonaws.com:8000/api
+```
+
+Depois use a coleção `docs/api-collection/fcg-platform.postman_collection.json` para chamar os endpoints.
+
+## 🛡️ 7. Cuidados de segurança e custos
 
 - **Credenciais:** não compartilhe chaves de acesso, tokens ou senhas. Evite armazenar credenciais diretamente nos arquivos do projeto.
 - **Permissões:** utilize apenas as permissões AWS necessárias para executar as atividades do projeto.

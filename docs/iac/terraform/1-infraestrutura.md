@@ -66,10 +66,22 @@ kubectl apply -f infrastructure/postgres/
 kubectl apply -f infrastructure/pgadmin/
 ```
 
+Acesse em `http://localhost:5050`:
+
+```powershell
+kubectl port-forward svc/pgadmin 5050:80 -n fcg-platform
+```
+
 ### 3.3. RabbitMQ
 
 ```powershell
 kubectl apply -f infrastructure/rabbitmq/
+```
+
+Acesse o painel em `http://localhost:15672`:
+
+```powershell
+kubectl port-forward svc/rabbitmq 15672:15672 -n fcg-platform
 ```
 
 ### 3.4. MongoDB
@@ -96,10 +108,42 @@ kubectl apply -k infrastructure/kong/
 kubectl apply -f infrastructure/opensearch/
 ```
 
-### 3.8. Observabilidade self-managed
+### 3.8. Observabilidade \*opcional
+
+Crie o namespace e o Secret utilizado pelo Grafana:
+
+```powershell
+kubectl apply -f infrastructure/observability/namespace.yaml
+kubectl apply -f infrastructure/observability/secret.yaml
+```
+
+Adicione o repositório Helm do Prometheus Community:
+
+```powershell
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --force-update
+helm repo update
+```
+
+Instale o kube-prometheus-stack:
+
+```powershell
+helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack `
+  --namespace observability `
+  --values infrastructure/observability/values-kube-prometheus-stack.yaml `
+  --wait `
+  --timeout 15m
+```
+
+Aplique os recursos complementares de observabilidade:
 
 ```powershell
 kubectl apply -k infrastructure/observability/
+```
+
+Acesse o Grafana em `http://localhost:3000`:
+
+```powershell
+kubectl port-forward svc/kube-prometheus-stack-grafana 3000:80 -n observability
 ```
 
 ## 4. Validar a infraestrutura
