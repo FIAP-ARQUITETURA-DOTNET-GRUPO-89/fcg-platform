@@ -18,7 +18,3 @@ data "aws_subnets" "default" {
 data "tls_certificate" "cluster_oidc" {
   url = aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
-
-data "aws_eks_cluster_auth" "this" {
-  name = aws_eks_cluster.this.name
-}
