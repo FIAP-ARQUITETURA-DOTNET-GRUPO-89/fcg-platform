@@ -60,17 +60,23 @@ kubectl apply -f namespace.yaml
 kubectl apply -f infrastructure/postgres/
 ```
 
-### 3.2. pgAdmin \*opcional
+### 3.2. pgAdmin _opcional_
 
 ```powershell
 kubectl apply -f infrastructure/pgadmin/
 ```
 
-Acesse em `http://localhost:5050`:
+**Acesso ao pgAdmin (opcional)**
+
+Para acessar a interface, execute o comando abaixo e mantenha o terminal aberto:
 
 ```powershell
 kubectl port-forward svc/pgadmin 5050:80 -n fcg-platform
 ```
+
+Em seguida, acesse pelo navegador:
+
+`http://localhost:5050`
 
 ### 3.3. RabbitMQ
 
@@ -78,11 +84,17 @@ kubectl port-forward svc/pgadmin 5050:80 -n fcg-platform
 kubectl apply -f infrastructure/rabbitmq/
 ```
 
-Acesse o painel em `http://localhost:15672`:
+**Acesso ao painel do RabbitMQ (opcional)**
+
+Para acessar a interface de gerenciamento, execute o comando abaixo e mantenha o terminal aberto:
 
 ```powershell
 kubectl port-forward svc/rabbitmq 15672:15672 -n fcg-platform
 ```
+
+Em seguida, acesse pelo navegador:
+
+`http://localhost:15672`
 
 ### 3.4. MongoDB
 
@@ -108,7 +120,7 @@ kubectl apply -k infrastructure/kong/
 kubectl apply -f infrastructure/opensearch/
 ```
 
-### 3.8. Observabilidade \*opcional
+### 3.8. Observabilidade _opcional_
 
 Crie o namespace e o Secret utilizado pelo Grafana:
 
@@ -140,11 +152,22 @@ Aplique os recursos complementares de observabilidade:
 kubectl apply -k infrastructure/observability/
 ```
 
-Acesse o Grafana em `http://localhost:3000`:
+**Acesso ao Grafana (opcional)**
+
+Para acessar o painel, execute o comando abaixo e mantenha o terminal aberto:
 
 ```powershell
 kubectl port-forward svc/kube-prometheus-stack-grafana 3000:80 -n observability
 ```
+
+Em seguida, acesse pelo navegador:
+
+`http://localhost:3000`
+
+**Credenciais de acesso:**
+
+- Usuário: `admin`
+- Senha: definida em `secret.yaml`.
 
 ## 4. Validar a infraestrutura
 
