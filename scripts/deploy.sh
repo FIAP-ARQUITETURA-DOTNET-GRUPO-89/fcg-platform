@@ -38,6 +38,11 @@ kubectl apply -f k8s/infrastructure/mongodb/deployment.yaml
 kubectl apply -f k8s/infrastructure/mongodb/service.yaml
 
 echo ""
+echo "🔎 Deploy do OpenSearch..."
+kubectl apply -f k8s/infrastructure/opensearch/deployment.yaml
+kubectl apply -f k8s/infrastructure/opensearch/service.yaml
+
+echo ""
 echo "⏳ Aguardando PostgreSQL..."
 kubectl rollout status deployment/postgres -n "${NAMESPACE}"
 
@@ -52,6 +57,10 @@ kubectl rollout status deployment/fcg-redis -n "${NAMESPACE}"
 echo ""
 echo "⏳ Aguardando MongoDB..."
 kubectl rollout status deployment/mongodb -n "${NAMESPACE}"
+
+echo ""
+echo "⏳ Aguardando OpenSearch..."
+kubectl rollout status deployment/fcg-opensearch -n "${NAMESPACE}"
 
 echo ""
 echo "👤 Deploy do FCG Users API..."

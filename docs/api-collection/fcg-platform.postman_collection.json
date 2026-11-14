@@ -511,6 +511,78 @@
                   "response": []
                 },
                 {
+                  "name": "Busca Avançada (fuzzy)",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/search?q=zeldda&page=1&pageSize=10",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "search"
+                      ],
+                      "query": [
+                        {
+                          "key": "q",
+                          "value": "zeldda",
+                          "description": "Termo de busca; tolera erros de digitação"
+                        },
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "pageSize",
+                          "value": "10"
+                        }
+                      ]
+                    },
+                    "description": "Busca no Elasticsearch/OpenSearch com Fuzzy Search e ordenação por relevância (_score)."
+                  }
+                },
+                {
+                  "name": "Reindexar Busca (ADM)",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Gateway-API}}/games/search/reindex",
+                      "host": [
+                        "{{Base-URL-Gateway-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "search",
+                        "reindex"
+                      ]
+                    },
+                    "description": "Recria o índice de busca a partir dos jogos ativos do banco relacional. Requer token de administrador."
+                  }
+                },
+                {
                   "name": "Buscar Jogo por ID",
                   "request": {
                     "auth": {
@@ -1422,6 +1494,78 @@
                     }
                   },
                   "response": []
+                },
+                {
+                  "name": "Busca Avançada (fuzzy)",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games/search?q=zeldda&page=1&pageSize=10",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "search"
+                      ],
+                      "query": [
+                        {
+                          "key": "q",
+                          "value": "zeldda",
+                          "description": "Termo de busca; tolera erros de digitação"
+                        },
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "pageSize",
+                          "value": "10"
+                        }
+                      ]
+                    },
+                    "description": "Busca no Elasticsearch/OpenSearch com Fuzzy Search e ordenação por relevância (_score)."
+                  }
+                },
+                {
+                  "name": "Reindexar Busca (ADM)",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{Base-URL-Catalog-API}}/games/search/reindex",
+                      "host": [
+                        "{{Base-URL-Catalog-API}}"
+                      ],
+                      "path": [
+                        "games",
+                        "search",
+                        "reindex"
+                      ]
+                    },
+                    "description": "Recria o índice de busca a partir dos jogos ativos do banco relacional. Requer token de administrador."
+                  }
                 },
                 {
                   "name": "Buscar Jogo por ID",
