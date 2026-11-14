@@ -1,7 +1,6 @@
-# OpenSearch de nó único para ambientes locais (Docker Desktop, kind, minikube).
-# Na AWS, a busca usa o Amazon OpenSearch Service gerenciado e este manifesto não é aplicado.
-# Os dados ficam em emptyDir: se o pod for recriado, a CatalogAPI recria o índice
-# e reindexa os jogos a partir do PostgreSQL na inicialização.
+# OpenSearch self-managed de nó único para o EKS e ambientes locais.
+# O serviço é ClusterIP e deve ser acessado apenas pelos workloads do cluster.
+# A persistência é fornecida pelo PVC usando o EBS CSI Driver.
 apiVersion: apps/v1
 kind: Deployment
 
@@ -34,6 +33,16 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+
+      initContainers:
+        - name: configure-vm-max-map-count
+          image: busybox:1.36
+          securityContext:
+            privileged: true
+          command:
+            - sh
+            - -c
+            - sysctl -w vm.max_map_count=262144
 
       containers:
         - name: fcg-opensearch
@@ -84,4 +93,5 @@ spec:
 
       volumes:
         - name: data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: fcg-opensearch-pvc
