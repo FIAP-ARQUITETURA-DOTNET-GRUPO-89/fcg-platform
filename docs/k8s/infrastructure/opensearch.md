@@ -47,8 +47,10 @@ k8s/infrastructure/opensearch/
 ```
 
 - Imagem `opensearchproject/opensearch:2.19.1`, nó único (`discovery.type=single-node`), heap de 512 MB.
-- O plugin de segurança fica desabilitado, **apenas para ambiente local**.
-- Os dados ficam em `emptyDir`. Se o pod for recriado, o índice é reconstruído a partir do PostgreSQL na próxima inicialização da CatalogAPI, ou via `POST /api/games/search/reindex`.
+- O plugin de segurança fica desabilitado nesta configuração inicial e o
+  Service permanece interno (`ClusterIP`).
+- Os dados ficam no PVC `fcg-opensearch-pvc`, provisionado pelo EBS CSI Driver.
+  Se o índice precisar ser reconstruído, use `POST /api/games/search/reindex`.
 
 Variáveis lidas pela CatalogAPI:
 
@@ -67,7 +69,8 @@ kubectl apply -f k8s/infrastructure/opensearch/
 kubectl rollout status deployment/fcg-opensearch -n fcg-platform
 ```
 
-O `scripts/deploy.sh` já inclui esses passos.
+O `scripts/deploy.sh` já inclui esses passos. No EKS, confirme antes que o
+addon EBS CSI esteja ativo e que a StorageClass `gp2` exista.
 
 # 🔎 Validação
 
@@ -84,13 +87,12 @@ Pela API (token de cliente):
 curl -H "Authorization: Bearer $TOKEN" "http://localhost:8000/api/games/search?q=zeldda"
 ```
 
-# ☁️ Produção (Amazon OpenSearch Service)
+# ☁️ Produção com OpenSearch self-managed no EKS
 
-Na AWS, este manifesto **não** é aplicado. A CatalogAPI aponta para um domínio gerenciado do Amazon OpenSearch Service:
-
-1. Provisionar o domínio (Terraform `aws_opensearch_domain`) na região `sa-east-1`, com acesso a partir da VPC do EKS.
-2. Habilitar *fine-grained access control* com usuário master.
-3. Injetar `OpenSearch__Url`, `OpenSearch__Username` e `OpenSearch__Password` via Secret do Kubernetes ou AWS Secrets Manager, **sem credenciais no repositório**.
+Na AWS, este manifesto pode ser aplicado como instalação self-managed de nó
+único para o ambiente acadêmico. Para produção, habilite o Security plugin,
+TLS e autenticação, restrinja o Service com NetworkPolicy e aumente para um
+cluster com múltiplos nós e volumes persistentes separados.
 
 # 🧹 Remoção
 

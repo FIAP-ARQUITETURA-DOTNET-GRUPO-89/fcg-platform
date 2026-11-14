@@ -90,9 +90,17 @@ kubectl apply -f infrastructure/redis/
 kubectl apply -k infrastructure/kong/
 ```
 
-### 3.7. Observabilidade \*opcional
+### 3.7. OpenSearch
 
-_Comando de implantação a adicionar._
+```powershell
+kubectl apply -f infrastructure/opensearch/
+```
+
+### 3.8. Observabilidade self-managed
+
+```powershell
+kubectl apply -k infrastructure/observability/
+```
 
 ## 4. Validar a infraestrutura
 
