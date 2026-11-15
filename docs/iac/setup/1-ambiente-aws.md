@@ -138,4 +138,4 @@ kubectl config current-context
 
 ## ➡️ 6. Próximo passo
 
-Acesse o [README do Terraform](../terraform/README.md) para o processo de provisionamento e gerenciamento da infraestrutura AWS.
+Acesse [2 - Configuração do Parameter Store](./2-parameter-store.md) para publicar as credenciais da plataforma. Em seguida, siga o [README do Terraform](../terraform/README.md) para o provisionamento da infraestrutura AWS.

@@ -86,7 +86,7 @@ Kong :8000
 
 O Kong utiliza o modo **DB-less**, portanto não possui banco de dados próprio.
 
-A configuração é declarativa e mantida no arquivo `kong.yml`. O Kustomize gera automaticamente o `ConfigMap` necessário a partir desse arquivo declarativo.
+A configuração é declarativa e mantida no template `kong.tmpl.yml`, **sem a chave JWT** (`secret: "{{ .jwtSecret }}"`). O Kustomize gera o ConfigMap `kong-config-template` a partir dele, e o Secret `kong-config`, com o `kong.yml` final, é criado pelo `scripts/secrets.sh k8s` no ambiente local ou pelo External Secrets na AWS. Ver [Gestão de Segredos](../../secrets.md).
 
 O Deployment utiliza:
 
@@ -184,7 +184,8 @@ O Kong é implantado após os microsserviços no script de deploy da plataforma,
 Aplicar:
 
 ```bash
-kubectl apply -f k8s/infrastructure/kong/secret.yaml
+# Gerado a partir do .env (ver docs/secrets.md)
+bash scripts/secrets.sh k8s
 
 ```
 

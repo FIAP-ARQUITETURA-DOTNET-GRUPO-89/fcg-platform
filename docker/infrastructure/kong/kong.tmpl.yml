@@ -9,7 +9,9 @@ consumers:
     jwt_secrets:
       - key: FcgUsers-Issuer
         algorithm: HS256
-        secret: FcgUsers_Secret_Key_2026_High_Security_Token
+        # Preenchido na implantação: External Secrets (AWS), scripts/secrets.sh k8s
+        # (Kubernetes local) ou entrypoint do container (Docker Compose).
+        secret: "{{ .jwtSecret }}"
 
 ######################################################
 # SERVICES
@@ -21,7 +23,7 @@ services:
   ####################################################
 
   - name: users-api
-    url: http://fcg-users-api:7010
+    url: http://users-api:7010
 
     routes:
       # Público - Login
@@ -37,30 +39,10 @@ services:
               policy: local
               limit_by: ip
 
-      # Público - Criar Usuário (Apenas POST)
-      - name: create-user-route
-        paths:
-          - /api/users
-        methods:
-          - POST
-        strip_path: false
-
-        plugins:
-          - name: rate-limiting
-            config:
-              minute: 5
-              policy: local
-              limit_by: ip
-
-      # Protegido por JWT + Rate Limit (GET, PUT, DELETE, PATCH)
+      # Protegido por JWT + Rate Limit
       - name: users-api-route
         paths:
           - /api/users
-        methods:
-          - GET
-          - PUT
-          - DELETE
-          - PATCH
         strip_path: false
 
         plugins:
@@ -81,7 +63,7 @@ services:
   ####################################################
 
   - name: catalog-api
-    url: http://fcg-catalog-api:7030
+    url: http://catalog-api:7030
 
     routes:
       # Protegido por JWT + Rate Limit
@@ -146,7 +128,7 @@ services:
   ####################################################
 
   - name: payments-api
-    url: http://fcg-payments-api:7040
+    url: http://payments-api:7040
 
     routes:
       # Protegido por JWT + Rate Limit

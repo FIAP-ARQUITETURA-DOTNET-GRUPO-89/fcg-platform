@@ -33,7 +33,8 @@ kubectl get configmaps -n fcg-platform
 Aplicar:
 
 ```bash
-kubectl apply -f k8s/infrastructure/postgres/secret.yaml
+# Gerado a partir do .env (ver docs/secrets.md)
+bash scripts/secrets.sh k8s
 ```
 
 Verificar:

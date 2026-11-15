@@ -13,6 +13,7 @@ O Terraform utiliza a VPC padrão da conta, as sub-redes disponíveis nessa VPC 
 - Instâncias `m7i-flex.large` com disco EBS de 20 GiB.
 - Escalabilidade inicial de 1 nó, com mínimo e máximo iguais a 1.
 - Roles IAM separadas para o cluster e para os nós.
+- Role IAM (IRSA) e Helm release do **External Secrets Operator**, que lê as credenciais do AWS Systems Manager Parameter Store (`/fcg-platform/*`). Os valores não passam pelo Terraform: ver [Gestão de Segredos](../../secrets.md).
 
 > **Atenção:** o Terraform não cria uma VPC. Ele reutiliza a VPC padrão e as sub-redes disponíveis nela.
 
@@ -50,6 +51,7 @@ iac/terraform/aws/
 ├── iam.tf                # roles e políticas IAM
 ├── main.tf               # cluster EKS e addons
 ├── node-group.tf         # grupo de nós EC2
+├── external-secrets.tf   # role IRSA + External Secrets (Parameter Store)
 ├── outputs.tf             # valores exibidos após o apply
 └── .terraform.lock.hcl   # versões e hashes do provider
 ```

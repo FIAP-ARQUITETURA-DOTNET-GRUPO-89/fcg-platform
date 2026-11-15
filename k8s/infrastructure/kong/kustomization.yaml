@@ -14,10 +14,13 @@ labels:
 
 resources:
   - deployment.yaml
-  - secret.yaml
   - service.yaml
 
+# Template sem a chave JWT. O Secret "kong-config" (kong.yml final) é gerado
+# pelo External Secrets na AWS ou por scripts/secrets.sh k8s no ambiente local.
 configMapGenerator:
-  - name: kong-config
+  - name: kong-config-template
     files:
-      - kong.yml
+      - kong.yml=kong.tmpl.yml
+    options:
+      disableNameSuffixHash: true

@@ -33,7 +33,8 @@ kubectl get configmaps -n fcg-platform
 Contém dados sensíveis como connection strings para RabbitMQ e PostgreSQL.
 
 ```bash
-kubectl apply -f microservices/fcg-payments/k8s/worker/secret.yaml
+# Gerado a partir do .env (ver docs/secrets.md)
+bash scripts/secrets.sh k8s
 ```
 
 Verificar:

@@ -4,6 +4,18 @@ set -e
 
 NAMESPACE="fcg-platform"
 
+# Aplica os manifestos de uma pasta, exceto secret*.yaml: as credenciais vêm do
+# .env (scripts/secrets.sh k8s) e nunca de arquivos versionados.
+apply_dir() {
+  local file
+  for file in "$1"/*.yaml; do
+    case "$(basename "$file")" in
+      secret*.yaml) echo "   ⏭️  ignorando $file (credenciais vêm do .env)" ;;
+      *) kubectl apply -f "$file" ;;
+    esac
+  done
+}
+
 echo "🚀 Iniciando deploy da plataforma..."
 
 echo ""
@@ -11,9 +23,12 @@ echo "📦 Criando namespace..."
 kubectl apply -f k8s/namespace.yaml
 
 echo ""
+echo "🔐 Criando Secrets a partir do .env..."
+bash scripts/secrets.sh k8s
+
+echo ""
 echo "🐘 Deploy do PostgreSQL..."
 kubectl apply -f k8s/infrastructure/postgres/configmap.yaml
-kubectl apply -f k8s/infrastructure/postgres/secret.yaml
 kubectl apply -f k8s/infrastructure/postgres/pvc.yaml
 kubectl apply -f k8s/infrastructure/postgres/deployment.yaml
 kubectl apply -f k8s/infrastructure/postgres/service.yaml
@@ -21,7 +36,6 @@ kubectl apply -f k8s/infrastructure/postgres/service.yaml
 echo ""
 echo "🐇 Deploy do RabbitMQ..."
 kubectl apply -f k8s/infrastructure/rabbitmq/configmap.yaml
-kubectl apply -f k8s/infrastructure/rabbitmq/secret.yaml
 kubectl apply -f k8s/infrastructure/rabbitmq/pvc.yaml
 kubectl apply -f k8s/infrastructure/rabbitmq/deployment.yaml
 kubectl apply -f k8s/infrastructure/rabbitmq/service.yaml
@@ -64,27 +78,27 @@ kubectl rollout status deployment/fcg-opensearch -n "${NAMESPACE}"
 
 echo ""
 echo "👤 Deploy do FCG Users API..."
-kubectl apply -f microservices/fcg-users/k8s/api/
+apply_dir microservices/fcg-users/k8s/api
 
 echo ""
 echo "👷 Deploy do FCG Notifications Worker..."
-kubectl apply -f microservices/fcg-notifications/k8s/worker/
+apply_dir microservices/fcg-notifications/k8s/worker
 
 echo ""
 echo "🎮 Deploy do FCG Catalog API..."
-kubectl apply -f microservices/fcg-catalog/k8s/api/
+apply_dir microservices/fcg-catalog/k8s/api
 
 echo ""
 echo "👷 Deploy do FCG Catalog Worker..."
-kubectl apply -f microservices/fcg-catalog/k8s/worker/
+apply_dir microservices/fcg-catalog/k8s/worker
 
 echo ""
 echo "💳 Deploy do FCG Payments API..."
-kubectl apply -f microservices/fcg-payments/k8s/api/
+apply_dir microservices/fcg-payments/k8s/api
 
 echo ""
 echo "👷 Deploy do FCG Payments Worker..."
-kubectl apply -f microservices/fcg-payments/k8s/worker/
+apply_dir microservices/fcg-payments/k8s/worker
 
 echo ""
 echo "🚪 Deploy do Kong API Gateway..."
@@ -106,17 +120,13 @@ else
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts >/dev/null
   helm repo update >/dev/null
 
-  GRAFANA_ADMIN_PASSWORD="${GRAFANA_ADMIN_PASSWORD:-admin}"
-
   helm upgrade --install kube-prom prometheus-community/kube-prometheus-stack \
     --namespace observability \
     --values k8s/infrastructure/observability/values-kube-prometheus-stack.yaml \
-    --set grafana.adminPassword="${GRAFANA_ADMIN_PASSWORD}" \
     --wait
 
   echo ""
-  echo "🔑 Grafana admin — usuário: admin  senha: ${GRAFANA_ADMIN_PASSWORD}"
-  echo "    Em produção, defina GRAFANA_ADMIN_PASSWORD antes de rodar o script."
+  echo "🔑 Grafana admin: usuário e senha definidos em GRAFANA_ADMIN_USER / GRAFANA_ADMIN_PASSWORD no .env."
 fi
 
 echo ""
