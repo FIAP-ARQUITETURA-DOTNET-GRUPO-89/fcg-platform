@@ -54,6 +54,42 @@ Crie o namespace:
 kubectl apply -f namespace.yaml
 ```
 
+### 3.0. Credenciais (Parameter Store + External Secrets)
+
+Nenhum manifesto do repositório contém senhas. As credenciais ficam no **AWS Systems Manager Parameter Store** (`SecureString`, prefixo `/fcg-platform`) e o **External Secrets Operator**, instalado pelo Terraform, cria os Secrets do Kubernetes. Detalhes em [Gestão de Segredos](../../secrets.md).
+
+Se os parâmetros ainda não foram publicados, siga o guia [2 - Configuração do Parameter Store](../setup/2-parameter-store.md) (passos 1 e 2 abaixo, em resumo).
+
+1. Na raiz do repositório, crie o `.env.aws` a partir do modelo e preencha com valores fortes (`openssl rand -hex 24`):
+
+   ```powershell
+   Copy-Item ..\.env.example ..\.env.aws
+   ```
+
+2. Publique os parâmetros. Execute no **Git Bash**, na raiz do repositório:
+
+   ```bash
+   bash scripts/secrets.sh aws
+   ```
+
+3. Conecte o cluster ao Parameter Store e crie os ExternalSecrets:
+
+   ```powershell
+   kubectl apply -f aws/cluster-secret-store.yaml
+   kubectl apply -f aws/external-secrets.yaml
+   ```
+
+4. Confira a sincronização:
+
+   ```powershell
+   kubectl get clustersecretstore
+   kubectl get externalsecrets -n fcg-platform
+   ```
+
+   O `ClusterSecretStore` deve estar `Valid`/`Ready` e os ExternalSecrets com status `SecretSynced`. O `kong-config` só sincroniza depois do passo 3.6, que cria o ConfigMap `kong-config-template`.
+
+> **Volumes existentes:** o PostgreSQL e o RabbitMQ gravam usuário e senha apenas na primeira inicialização do volume. Se o cluster já tinha esses componentes com as senhas antigas, remova os PVCs `postgres-pvc` e `rabbitmq-pvc` (os dados são perdidos) antes de implantá-los novamente.
+
 ### 3.1. PostgreSQL
 
 ```powershell
@@ -122,11 +158,11 @@ kubectl apply -f infrastructure/opensearch/
 
 ### 3.8. Observabilidade _opcional_
 
-Crie o namespace e o Secret utilizado pelo Grafana:
+Crie o namespace e o ExternalSecret do Grafana (a senha vem do parâmetro `/fcg-platform/grafana`):
 
 ```powershell
 kubectl apply -f infrastructure/observability/namespace.yaml
-kubectl apply -f infrastructure/observability/secret.yaml
+kubectl apply -f aws/external-secrets-observability.yaml
 ```
 
 Adicione o repositório Helm do Prometheus Community:
@@ -167,7 +203,7 @@ Em seguida, acesse pelo navegador:
 **Credenciais de acesso:**
 
 - Usuário: `admin`
-- Senha: definida em `secret.yaml`.
+- Senha: `GRAFANA_ADMIN_PASSWORD` definida no `.env.aws` (parâmetro `/fcg-platform/grafana`).
 
 ## 4. Validar a infraestrutura
 
@@ -177,6 +213,7 @@ Confira os recursos implantados no namespace:
 kubectl get pods -n fcg-platform
 kubectl get svc -n fcg-platform
 kubectl get pvc -n fcg-platform
+kubectl get externalsecrets -A
 ```
 
 Verifique se os Pods estão em execução e se os PVCs estão vinculados (`Bound`), quando aplicável.

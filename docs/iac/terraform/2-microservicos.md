@@ -60,7 +60,17 @@ Os serviços utilizam os seguintes nomes DNS internos:
 
 Implante e valide esses componentes antes de prosseguir, conforme o guia [1 - Implantação da infraestrutura](./1-infraestrutura.md).
 
+Confirme também que os Secrets dos microsserviços já foram criados pelo External Secrets a partir do Parameter Store:
+
+```powershell
+kubectl get externalsecrets -n fcg-platform
+```
+
+Todos devem estar com status `SecretSynced`.
+
 ## 🏗️ 4. Implantar os microserviços
+
+Os comandos abaixo aplicam os manifestos de cada pasta **exceto** `secret*.yaml`: na AWS as credenciais vêm exclusivamente do Parameter Store, e um `secret.yaml` versionado sobrescreveria o Secret criado pelo External Secrets.
 
 Acesse a pasta raiz do repositório:
 
@@ -71,27 +81,27 @@ cd "C:\REPOSITORIO\4. FIAP\fcg-platform"
 ### 4.1. FCG Users API
 
 ```powershell
-kubectl apply -f microservices/fcg-users/k8s/api/
+Get-ChildItem microservices/fcg-users/k8s/api/*.yaml -Exclude secret*.yaml | ForEach-Object { kubectl apply -f $_.FullName }
 ```
 
 ### 4.2. FCG Catalog API e Worker
 
 ```powershell
-kubectl apply -f microservices/fcg-catalog/k8s/api/
-kubectl apply -f microservices/fcg-catalog/k8s/worker/
+Get-ChildItem microservices/fcg-catalog/k8s/api/*.yaml -Exclude secret*.yaml | ForEach-Object { kubectl apply -f $_.FullName }
+Get-ChildItem microservices/fcg-catalog/k8s/worker/*.yaml -Exclude secret*.yaml | ForEach-Object { kubectl apply -f $_.FullName }
 ```
 
 ### 4.3. FCG Payments API e Worker
 
 ```powershell
-kubectl apply -f microservices/fcg-payments/k8s/api/
-kubectl apply -f microservices/fcg-payments/k8s/worker/
+Get-ChildItem microservices/fcg-payments/k8s/api/*.yaml -Exclude secret*.yaml | ForEach-Object { kubectl apply -f $_.FullName }
+Get-ChildItem microservices/fcg-payments/k8s/worker/*.yaml -Exclude secret*.yaml | ForEach-Object { kubectl apply -f $_.FullName }
 ```
 
 ### 4.4. FCG Notifications Worker
 
 ```powershell
-kubectl apply -f microservices/fcg-notifications/k8s/worker/
+Get-ChildItem microservices/fcg-notifications/k8s/worker/*.yaml -Exclude secret*.yaml | ForEach-Object { kubectl apply -f $_.FullName }
 ```
 
 ## ✅ 5. Validar a implantação
@@ -126,7 +136,7 @@ Depois use a coleção `docs/api-collection/fcg-platform.postman_collection.json
 
 ## 🛡️ 7. Cuidados de segurança e custos
 
-- **Credenciais:** não compartilhe chaves de acesso, tokens ou senhas. Evite armazenar credenciais diretamente nos arquivos do projeto.
+- **Credenciais:** não compartilhe chaves de acesso, tokens ou senhas. As credenciais da plataforma ficam no Parameter Store e no `.env.aws` local, nunca em arquivos versionados (ver [Gestão de Segredos](../../secrets.md)).
 - **Permissões:** utilize apenas as permissões AWS necessárias para executar as atividades do projeto.
 - **Imagens Docker:** mantenha as imagens dos microserviços no Amazon ECR e evite expor credenciais de acesso ao registry.
 - **Custos AWS:** lembre-se de que EKS, instâncias EC2, volumes EBS, Load Balancers e outros recursos podem gerar cobranças enquanto estiverem provisionados.

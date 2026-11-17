@@ -35,7 +35,8 @@ kubectl get configmaps -n fcg-platform
 Contém dados sensíveis como connection strings e demais segredos utilizados pela aplicação.
 
 ```bash
-kubectl apply -f microservices/fcg-catalog/k8s/api/secret.yaml
+# Gerado a partir do .env (ver docs/secrets.md)
+bash scripts/secrets.sh k8s
 ```
 
 Verificar:

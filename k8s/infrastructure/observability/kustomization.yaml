@@ -12,7 +12,6 @@ labels:
 
 resources:
   - namespace.yaml
-  - secret.yaml
   - servicemonitor-fcg.yaml
 
 configMapGenerator:

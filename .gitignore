@@ -9,3 +9,14 @@
 *.tfvars
 !*.tfvars.example
 crash.log
+
+# ==========================================
+# Credenciais locais (modelo: .env.example)
+# ==========================================
+
+.env
+.env.*
+!.env.example
+
+# Arquivos com credenciais retirados do repositório (apagar a pasta)
+_to_delete/

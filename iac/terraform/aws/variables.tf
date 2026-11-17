@@ -71,3 +71,21 @@ variable "tags" {
     Project = "FCG"
   }
 }
+
+variable "parameter_store_prefix" {
+  description = "Prefixo (caminho) dos parâmetros SecureString da plataforma no Parameter Store."
+  type        = string
+  default     = "/fcg-platform"
+}
+
+variable "external_secrets_namespace" {
+  description = "Namespace onde o External Secrets Operator é instalado."
+  type        = string
+  default     = "external-secrets"
+}
+
+variable "external_secrets_chart_version" {
+  description = "Versão do Helm chart do External Secrets Operator."
+  type        = string
+  default     = "2.9.0"
+}

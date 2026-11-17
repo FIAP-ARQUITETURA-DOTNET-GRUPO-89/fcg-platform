@@ -43,6 +43,12 @@ docker compose version
 
 # Executando a plataforma
 
+As credenciais ficam em um arquivo `.env` fora do Git. Na primeira vez, crie-o a partir do modelo e preencha os valores (ver [Gestão de Segredos](secrets.md)):
+
+```bash
+cp .env.example .env
+```
+
 Na raiz do projeto execute:
 
 ```bash
@@ -97,8 +103,8 @@ docker compose up -d
 | Host | localhost |
 | Porta | 5432 |
 | Database | fcg |
-| Usuário | postgres |
-| Senha | postgres |
+| Usuário | `POSTGRES_USER` do `.env` |
+| Senha | `POSTGRES_PASSWORD` do `.env` |
 
 ---
 
@@ -106,10 +112,10 @@ docker compose up -d
 
 | Configuração | Valor |
 |--------------|-------|
-| Broker | amqp://guest:guest@localhost:5672 |
+| Broker | amqp://localhost:5672 |
 | Dashboard | http://localhost:15672 |
-| Usuário | guest |
-| Senha | guest |
+| Usuário | `RABBITMQ_USER` do `.env` |
+| Senha | `RABBITMQ_PASSWORD` do `.env` |
 
 ---
 
@@ -256,7 +262,7 @@ fcg-platform
 
 # Variáveis de Ambiente
 
-Todas as configurações são injetadas pelo Docker Compose.
+Todas as configurações são injetadas pelo Docker Compose. As credenciais vêm do `.env` por interpolação (`${VAR}`); se alguma faltar, o Compose para com a mensagem `defina <VAR> no .env`.
 
 Exemplo:
 
@@ -265,9 +271,9 @@ environment:
   ASPNETCORE_ENVIRONMENT: Docker
   ASPNETCORE_URLS: http://+:7071
 
-  ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=postgres;Password=postgres
+  ConnectionStrings__Default: Host=postgres;Port=5432;Database=fcg;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
 
-  ConnectionStrings__Rabbitmq: amqp://guest:guest@rabbitmq:5672
+  ConnectionStrings__Rabbitmq: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672
 ```
 
 Para o FCG Catalog, a conexão com o Redis utiliza:

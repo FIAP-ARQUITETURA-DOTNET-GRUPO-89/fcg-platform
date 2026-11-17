@@ -38,11 +38,6 @@ spec:
               value: /dev/stderr
             - name: KONG_ADMIN_LISTEN
               value: "off"
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: kong-secret
-                  key: JWT_SECRET
           ports:
             - name: proxy
               containerPort: 8000
@@ -77,5 +72,5 @@ spec:
             readOnlyRootFilesystem: false
       volumes:
         - name: kong-config
-          configMap:
-            name: kong-config
+          secret:
+            secretName: kong-config

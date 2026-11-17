@@ -32,3 +32,13 @@ output "ebs_csi_role_arn" {
   description = "ARN da role IAM do EBS CSI Driver."
   value       = aws_iam_role.ebs_csi.arn
 }
+
+output "external_secrets_role_arn" {
+  description = "ARN da role IAM (IRSA) usada pelo External Secrets para ler o Parameter Store."
+  value       = aws_iam_role.external_secrets.arn
+}
+
+output "parameter_store_prefix" {
+  description = "Prefixo dos parâmetros lidos pelo External Secrets."
+  value       = var.parameter_store_prefix
+}

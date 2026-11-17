@@ -73,6 +73,12 @@ Os scripts foram desenvolvidos para serem executados em um terminal compatível 
 
 No Windows, abra o **Git Bash** na raiz do repositório e execute os comandos abaixo.
 
+Antes do primeiro deploy, crie o arquivo `.env` com as credenciais (ele não é versionado). O `deploy.sh` gera os Secrets do Kubernetes a partir dele. Ver [Gestão de Segredos](secrets.md).
+
+```bash
+cp .env.example .env
+```
+
 ## 🚀 Deploy completo
 
 ```bash

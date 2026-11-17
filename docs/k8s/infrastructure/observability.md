@@ -59,8 +59,8 @@ Toda a stack roda no namespace dedicado `observability`, isolando-a dos microsse
 Os valores customizados estão em `values-kube-prometheus-stack.yaml`. Pontos-chave:
 
 - Retenção de 6h (in-memory, sem PVC — apropriado para dev/demo).
-- Grafana autenticado pelo Secret `kube-prom-grafana`, definido em
-  `secret.yaml`.
+- Grafana autenticado pelo Secret `kube-prom-grafana`, criado a partir do `.env`
+  (`scripts/secrets.sh k8s`) ou do Parameter Store na AWS. Ver [Gestão de Segredos](../../secrets.md).
 - Grafana sidecar habilitado para provisionar dashboards a partir de ConfigMaps com label `grafana_dashboard=1`.
 - Componentes do control plane (`kubeControllerManager`, `kubeScheduler`, `kubeEtcd`, `kubeProxy`) desabilitados por não serem acessíveis em clusters gerenciados.
 
@@ -88,7 +88,7 @@ O script de deploy completo da plataforma também realiza automaticamente a inst
 # 🔎 Acesso
 
 ```bash
-# Grafana (usuário e senha definidos em infrastructure/observability/secret.yaml)
+# Grafana (usuário e senha: GRAFANA_ADMIN_USER / GRAFANA_ADMIN_PASSWORD do .env)
 kubectl port-forward -n observability svc/kube-prom-grafana 3000:80
 
 # Prometheus UI (inspeção de targets e query builder)
