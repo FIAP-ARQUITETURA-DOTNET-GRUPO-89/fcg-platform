@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fcg-platform-ingress
+  namespace: fcg-platform
+  labels:
+    app.kubernetes.io/name: fcg-platform-ingress
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/part-of: fcg-platform
+  annotations:
+    # Define que o controller ativo é o ALB da AWS
+    kubernetes.io/ingress.class: "alb"
+    # Configura o ALB como internet-facing (externo/público)
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    # Utiliza o modo ip para direcionar o tráfego diretamente aos pods
+    alb.ingress.kubernetes.io/target-type: "ip"
+    # Como o HTTPS ainda está pendente, expor explicitamente a porta HTTP (80)
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+spec:
+  rules:
+    - http:
+        paths:
+          # Roteamento para a Users API
+          - path: /users
+            pathType: Prefix
+            backend:
+              service:
+                name: fcg-users-api
+                port:
+                  number: 7010
+          # Roteamento pré-configurado para a Catalog API (conforme alinhado)
+          - path: /catalog
+            pathType: Prefix
+            backend:
+              service:
+                name: fcg-catalog-api
+                port:
+                  number: 80 # Ajuste a porta caso a Catalog use outra porta padrão
