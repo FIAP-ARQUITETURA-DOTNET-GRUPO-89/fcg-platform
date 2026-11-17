@@ -12,6 +12,8 @@ metadata:
     app.kubernetes.io/managed-by: kubectl
 
 spec:
+  storageClassName: gp2
+
   accessModes:
     - ReadWriteOnce
 

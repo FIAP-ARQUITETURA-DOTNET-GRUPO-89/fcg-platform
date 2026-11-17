@@ -19,9 +19,10 @@ alertmanager:
   enabled: false
 
 grafana:
-  # Placeholder — sobrescrever em qualquer ambiente compartilhado via
-  # --set grafana.adminPassword=... ou grafana.admin.existingSecret.
-  adminPassword: CHANGE_ME_BEFORE_PROD
+  admin:
+    existingSecret: kube-prom-grafana
+    userKey: admin-user
+    passwordKey: admin-password
   defaultDashboardsTimezone: browser
   service:
     type: ClusterIP

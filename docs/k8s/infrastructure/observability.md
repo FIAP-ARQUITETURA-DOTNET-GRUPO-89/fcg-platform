@@ -59,7 +59,8 @@ Toda a stack roda no namespace dedicado `observability`, isolando-a dos microsse
 Os valores customizados estão em `values-kube-prometheus-stack.yaml`. Pontos-chave:
 
 - Retenção de 6h (in-memory, sem PVC — apropriado para dev/demo).
-- Grafana com `adminPassword: CHANGE_ME_BEFORE_PROD` — **deve ser sobrescrito** em ambientes compartilhados.
+- Grafana autenticado pelo Secret `kube-prom-grafana`, definido em
+  `secret.yaml`.
 - Grafana sidecar habilitado para provisionar dashboards a partir de ConfigMaps com label `grafana_dashboard=1`.
 - Componentes do control plane (`kubeControllerManager`, `kubeScheduler`, `kubeEtcd`, `kubeProxy`) desabilitados por não serem acessíveis em clusters gerenciados.
 
@@ -68,26 +69,14 @@ Os valores customizados estão em `values-kube-prometheus-stack.yaml`. Pontos-ch
 ## Pré-requisitos
 
 - Cluster Kubernetes acessível via `kubectl`.
-- [Helm 3](https://helm.sh/) instalado.
+- Terraform aplicado na pasta `iac/terraform/aws`.
 
 ## Passo a passo
 
 ```bash
-# 1. Namespace + ServiceMonitor + dashboard (via kustomize)
+# O Terraform já instalou a stack, os CRDs, o Prometheus e o Grafana.
+# Aplicar apenas o ServiceMonitor e o dashboard:
 kubectl apply -k k8s/infrastructure/observability/
-
-# 2. Adicionar o repo do kube-prometheus-stack
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-
-# 3. Instalar/atualizar a stack (CRDs + Prometheus + Grafana + exporters)
-#
-# Sobrescreva a senha do Grafana em qualquer ambiente compartilhado.
-helm upgrade --install kube-prom prometheus-community/kube-prometheus-stack \
-  --namespace observability \
-  --values k8s/infrastructure/observability/values-kube-prometheus-stack.yaml \
-  --set grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD" \
-  --wait
 ```
 
 O script de deploy completo da plataforma também realiza automaticamente a instalação da stack de observabilidade:
@@ -99,7 +88,7 @@ O script de deploy completo da plataforma também realiza automaticamente a inst
 # 🔎 Acesso
 
 ```bash
-# Grafana (usuário: admin — senha: a que foi passada no install)
+# Grafana (usuário e senha definidos em infrastructure/observability/secret.yaml)
 kubectl port-forward -n observability svc/kube-prom-grafana 3000:80
 
 # Prometheus UI (inspeção de targets e query builder)
@@ -182,9 +171,9 @@ kubectl delete pod -n observability -l app.kubernetes.io/name=grafana
 
 Sintoma: pod reiniciando com `reason: OOMKilled` em `kubectl describe pod`.
 
-Fix: aumentar `grafana.resources.limits.memory` em `values-kube-prometheus-stack.yaml` e rodar `helm upgrade`.
+Fix: aumentar `grafana.resources.limits.memory` em `values-kube-prometheus-stack.yaml` e rodar `terraform apply`.
 
-### `helm upgrade` falha com "another operation in progress"
+### `terraform apply` falha com "another operation in progress"
 
 Fix: rollback para a última revisão saudável:
 
